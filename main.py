@@ -1,50 +1,63 @@
-import serial
 import numpy as np
-import mne
+import serial
+from picard import picard
 from mne import create_info
 from mne.io import RawArray
-from picard import picard
 import matplotlib.pyplot as plt
 
-# Define EEG Parameters
-sfreq = 250  # Sampling rate (adjust for your EEG device)
+# EEG parameters
+sfreq = 250  # Sampling rate (Hz)
 n_channels = 4  # Number of EEG channels
-ch_names = ['C3', 'Cz', 'C4', 'Ref']  # Replace with your actual electrode names
-ch_types = ['eeg'] * n_channels
+buffer_size = sfreq * 2  # 2 seconds of data
 
-# Create MNE info object
-info = create_info(ch_names, sfreq, ch_types)
-
-# Initialize EEG buffer
-buffer_size = sfreq * 2  # Store 2 seconds of data
+# Create EEG buffer
 eeg_buffer = np.zeros((n_channels, buffer_size))
 
-# Open USB Serial Connection
+# Define MNE metadata
+ch_names = ['C3', 'Cz', 'C4', 'Ref']
+ch_types = ['eeg'] * n_channels
+info = create_info(ch_names, sfreq, ch_types)
+
+# Open USB Serial Connection (adjust COM port)
 ser = serial.Serial('COM3', baudrate=115200, timeout=1)
 
-def update_eeg_data():
+def detect_eye_blink(components):
+    """
+    Identify and remove eye blink artifacts based on component power in low frequencies.
+    """
+    power = np.var(components, axis=0)  # Compute power of each component
+    blink_component = np.argmax(power)  # Assume highest power corresponds to blinks
+    components[:, blink_component] = 0  # Remove blink component
+    return components
+
+def process_realtime_ica():
     global eeg_buffer
     while True:
         try:
+            # Read new EEG data
             line = ser.readline().decode('utf-8').strip()
-            eeg_values = list(map(float, line.split(',')))  # Convert string to float list
+            eeg_values = list(map(float, line.split(',')))
             
             if len(eeg_values) == n_channels:
-                eeg_buffer = np.roll(eeg_buffer, -1, axis=1)  # Shift data left
-                eeg_buffer[:, -1] = eeg_values  # Add new EEG data
+                # Shift buffer (remove oldest, add new EEG sample)
+                eeg_buffer = np.roll(eeg_buffer, -1, axis=1)
+                eeg_buffer[:, -1] = eeg_values
                 
-                # Apply Picard ICA (Fast ICA Alternative)
+                # Apply ICA on the buffered data
                 components, W = picard(eeg_buffer.T, ortho=True)
                 
-                # Convert back to EEG format
+                # Detect and remove eye blink artifacts
+                components = detect_eye_blink(components)
+                
+                # Reconstruct cleaned EEG
                 eeg_cleaned = np.dot(W.T, components.T)
                 
-                # Convert EEG buffer to MNE RawArray
+                # Convert to MNE format and visualize
                 raw = RawArray(eeg_cleaned, info)
-                raw.plot(scalings='auto', show=True)  # Live EEG Plot
+                raw.plot(scalings='auto', show=True)
         except Exception as e:
             print(f"Error: {e}")
-            continue  # Ignore bad data packets
+            continue  # Ignore errors and continue streaming
 
-# Run the EEG Streaming
-update_eeg_data()
+# Run real-time ICA processing
+process_realtime_ica()
