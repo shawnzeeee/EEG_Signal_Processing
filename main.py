@@ -5,6 +5,9 @@ from mne import create_info
 from mne.io import RawArray
 import matplotlib.pyplot as plt
 
+import 
+
+
 # EEG parameters
 sfreq = 250  # Sampling rate (Hz)
 n_channels = 4  # Number of EEG channels
