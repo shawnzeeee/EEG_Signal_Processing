@@ -1,17 +1,25 @@
 import serial
-import time
 
-PORT = "COM3"  # Replace with your correct COM port
-BAUD_RATE = 9600
+# Replace 'COMX' with the correct port (e.g., 'COM3' for Windows, '/dev/ttyUSB0' for Linux)
+PORT = "COM3"
+BAUD_RATE = 9600  # Adjust based on g.Nautilus settings
 
-ser = serial.Serial(PORT, BAUD_RATE, timeout=1)
+try:
+    # Open serial port
+    ser = serial.Serial(PORT, BAUD_RATE, timeout=1)
+    print(f"Connected to {PORT}")
 
-time.sleep(2)  # Allow time for the connection to establish
+    # Read and display 10 lines of data
+    for _ in range(10):
+        byte = ser.read(1)
+    if byte:
+        print(f"Byte Received: {byte}")
+        data = ser.readline().decode('utf-8', errors='ignore').strip()
+        print(f"Received: {data}")
+    
+    # Close serial port
+    ser.close()
+    print("Serial connection closed.")
 
-while True:
-    if ser.in_waiting > 0:  # Check if data is coming
-        data = ser.read(1)
-        print(f"Byte Received: {data}")
-    else:
-        print("No data received...")
-        time.sleep(1)  # Avoid spamming the output
+except Exception as e:
+    print(f"Error: {e}")

@@ -18,4 +18,4 @@ while True:
         print(f"Byte Received: {data}")
     else:
         print("No data received...")
-        time.sleep(0.2)  # Avoid spamming the output
+        time.sleep(0.5)  # Avoid spamming the output
