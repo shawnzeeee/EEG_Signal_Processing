@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 //#include "c:/Users/shawn/gtec/gNEEDaccess Client API/C/GDSClientAPI.h"
-#include "../C/GDSClientAPI.h"
+//extern "C" {
+    #include "../C/GDSClientAPI.h"
+//}
+
 
 #define SERVER_IP "127.0.0.1"  // Change if needed
 #define SERVER_PORT 50223      // Default g.NEEDaccess server port
