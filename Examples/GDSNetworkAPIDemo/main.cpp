@@ -67,6 +67,7 @@ int main(int argc, char* argv[])
     try 
 	{
         int ret = InitNetworking();
+        //int ret = 0;
         if (ret != NETWORKING_STARTUP_SUCCESS)
             return -1;
 
@@ -79,7 +80,7 @@ int main(int argc, char* argv[])
         if (ret == SOCKET_ERROR) 
 		{
             CloseNetworkConnection(command_socket);
-            CleanupNetworking();
+            CleanupNetworking(); 
             return -1;
         }
 

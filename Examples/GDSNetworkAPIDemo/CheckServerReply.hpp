@@ -13,6 +13,6 @@
 // If not disabled, then this method throws the error number on error, else
 // this method returns the error number.
 //-------------------------------------------------------------------------------------
-int CheckServerReply(const std::string& xml, bool disp = true, bool enable_throw = true) throw (int);
+int CheckServerReply(const std::string& xml, bool disp = true, bool enable_throw = true);
 
 #endif // CHECKSERVERREPLY_HPP_INCLUDED

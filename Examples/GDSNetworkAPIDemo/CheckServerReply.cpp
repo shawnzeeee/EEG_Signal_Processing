@@ -1,7 +1,7 @@
 //COPYRIGHT © 2013 G.TEC MEDICAL ENGINEERING GMBH, AUSTRIA
 #include "CheckServerReply.hpp"
 
-int CheckServerReply(const std::string& xml, bool disp, bool enable_throw) throw (int) 
+int CheckServerReply(const std::string& xml, bool disp, bool enable_throw)
 {
     std::string str_error = ParseXML(xml, GDS_XML_ERROR_NODE);
     std::string status = ParseXML(xml, GDS_XML_STATUS_NODE);

@@ -1,7 +1,7 @@
 //COPYRIGHT © 2013 G.TEC MEDICAL ENGINEERING GMBH, AUSTRIA
 #include "EstablishNetworkConnection.hpp"
 
-#if defined linux
+#ifdef __linux__
 
 int InitNetworking() 
 {
@@ -85,7 +85,7 @@ int ListenOnNetwork(socketd_t* listenfd, int port)
 	if (ret == SOCKET_ERROR)
         std::cerr << "ERROR: Could not disable TCP's delayed acknowledgement feature" << std::endl;
 
-#if defined linux
+#ifdef __linux__
     /* Enable address reuse */
     int on = 1;
     ret = setsockopt(*listenfd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
@@ -118,16 +118,16 @@ int AcceptOnNetwork(socketd_t listen_fd, size_t receive_buffer_size)
 	int tcp_nodelay = 1;
 
     socketd_t socketfd = MKR_ACCEPT(listen_fd, (struct sockaddr *) &client_addr, &client_addr_length);
-    if (socketfd == SOCKET_ERROR)
+    if (socketfd == SOCKET_ERROR){
         std::cerr << "ERROR: on accept" << std::endl;
-
+    }
     int ret = setsockopt(socketfd, SOL_SOCKET, SO_RCVBUF, (char*) &receive_buffer_size, sizeof(receive_buffer_size));
-    if (ret == SOCKET_ERROR)
+    if (ret == SOCKET_ERROR){
         std::cerr << "ERROR: Could not set the receive buffer size" << std::endl;
-
+    }
 	ret = setsockopt(socketfd, IPPROTO_TCP, TCP_NODELAY, (char*) &tcp_nodelay, sizeof(int));
-	if (ret == SOCKET_ERROR)
+	if (ret == SOCKET_ERROR){
         std::cerr << "ERROR: Could not disable TCP's delayed acknowledgement feature" << std::endl;
-
+    }
     return (int) socketfd;
 }
