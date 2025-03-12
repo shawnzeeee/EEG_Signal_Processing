@@ -2,10 +2,10 @@
 CXX = arm-linux-gnueabihf-g++  
 
 # Compiler flags
-CXXFLAGS = -pthread -std=c++17 -Wall -Wextra 
+CXXFLAGS = -pthread -std=c++17 -Wall -Wextra -D_GLIBCXX_USE_CXX11_ABI=0
 
 # Linker flags
-LDFLAGS = -lrt  
+LDFLAGS = -static -static-libstdc++ -static-libgcc   
 
 # Target executable name
 TARGET = GDSNetworkInterfaceDemo

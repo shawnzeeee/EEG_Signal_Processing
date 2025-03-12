@@ -33,7 +33,7 @@ Transceiver::~Transceiver(void)
 std::string Transceiver::SendReceive(const std::string& command_message, const std::string& event_code)
 {
 	std::string reply;
-
+	std::cout << "DEBUG: Sending message: " << command_message << std::endl;
     if (!Send(command_message))
         return "";
 

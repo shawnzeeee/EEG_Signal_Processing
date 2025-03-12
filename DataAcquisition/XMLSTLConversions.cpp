@@ -183,7 +183,7 @@ std::string PairToXML(std::pair<std::string, std::string> p, std::string xml_met
         std::string token_second_meta_begin(XML_TOKEN_LT + xml_stl_pair_second + xml_meta_info_second + XML_TOKEN_GT + "\n");
         xml += token_second_meta_begin + p.second + token_second_end;
     }
-
+    std::cout << "DEBUG PairToXML: Sending message: " << xml << std::endl;
     return xml;
 }
 

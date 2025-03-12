@@ -68,6 +68,7 @@ void CloseNetworkConnection(const socketd_t &socketfd)
 
 int ListenOnNetwork(socketd_t* listenfd, int port) 
 {
+    
     struct sockaddr_in local_address;
     *listenfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (*listenfd == SOCKET_ERROR) 

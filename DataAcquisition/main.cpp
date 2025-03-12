@@ -25,6 +25,28 @@ bool CheckPositive(int number, const size_t& dummy);
 template<typename T1, typename T2> void PromptUser(std::ostream* outstream, std::istream* instream, std::string message, std::string error_message, T1* result, bool (*constrain_function)(T1, const T2&), T2 constrain = 0);
 void PrintDevices(std::ostream* outstream, const std::vector<Device>& device_list);
 
+std::string DecodeXML(std::string input) { //new
+    size_t pos = 0;
+    
+    while ((pos = input.find("&lt;", pos)) != std::string::npos) {
+        input.replace(pos, 4, "<");
+    }
+    pos = 0;
+    while ((pos = input.find("&gt;", pos)) != std::string::npos) {
+        input.replace(pos, 4, ">");
+    }
+    pos = 0;
+    while ((pos = input.find("&quot;", pos)) != std::string::npos) {
+        input.replace(pos, 6, "\"");
+    }
+    pos = 0;
+    while ((pos = input.find("&amp;", pos)) != std::string::npos) {
+        input.replace(pos, 5, "&");
+    }
+    
+    return input;
+}
+
 //main entry point
 int main(int argc, char* argv[]) 
 {
@@ -154,19 +176,25 @@ int main(int argc, char* argv[])
         // Tell the server where the client is accepting an incoming connection
         // (this connection is used to transfer measurement data)
         //----------------------------------------------------------------------
+
         std::pair<std::string, std::string> local_endpoint;
         local_endpoint.first = local_ip;
         local_endpoint.second = ToString(local_port);
         payload = EscapeXML(SetupXMLMessage(PairToXML(local_endpoint)));
-        msg = SetupXMLMessage(session_id, CMD_SETUP_STREAMING, payload);
+        std::string decoded_payload = DecodeXML(payload); //new
+        decoded_payload = "<first>" + local_ip + "</first><second>" + std::to_string(local_port) + "</second>";
+        msg = SetupXMLMessage(session_id, CMD_SETUP_STREAMING, decoded_payload);
+        std::cout << "Breakpoint" << std::endl;
         reply = transceiver.SendReceive(msg);
         CheckServerReply(reply);
-
+        
         // Accept the incoming connection (used to transfer measurement data)
         //----------------------------------------------------------------------
         data_socket = AcceptOnNetwork(listen_socket);
+
         if (data_socket == SOCKET_ERROR) 
 		{
+            
             CloseNetworkConnection(listen_socket);
             CloseNetworkConnection(command_socket);
             CleanupNetworking();
@@ -180,7 +208,6 @@ int main(int argc, char* argv[])
         msg = SetupXMLMessage(session_id, CMD_OPEN_DAQ_SESSION_EXCLUSIVELY, payload);
         reply = transceiver.SendReceive(msg);
         CheckServerReply(reply);
-
         // Setup the configuration (in XML) for the chosen device; the
         // configuration is stored in an extra variable (for further usage)
         //----------------------------------------------------------------------
