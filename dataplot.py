@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 # Define the file path again
 #file_path = "EEG_Recordings/Daniel/BaseRecording/trial1.bin"
-file_path = "EEG_Recordings/Daniel/IndexOpen/trial5.bin"
+file_path = "EEG_Recordings/Daniel/ThumbOpen/trial4.bin"
 
 # Load the binary file and read as float32
 data_array = np.fromfile(file_path, dtype=np.float32)
