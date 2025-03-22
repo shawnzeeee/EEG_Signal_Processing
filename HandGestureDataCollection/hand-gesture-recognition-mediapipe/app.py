@@ -167,9 +167,13 @@ def main():
                 hand_sign_id = keypoint_classifier(pre_processed_landmark_list)
                 
                 # Send gesture classification to shared memory
-                if hand_sign_id == 3:
-                    hand_sign_id = 0
-                send_gesture_classification(hand_sign_id)
+                hand_sign_id_temp = hand_sign_id
+                
+                if hand_sign_id_temp == 3 or hand_sign_id_temp == 0:
+                    hand_sign_id_temp = 11
+                elif hand_sign_id_temp == 1:
+                    hand_sign_id_temp = 12
+                send_gesture_classification(hand_sign_id_temp)
 
                 if hand_sign_id == 2:  # Point gesture
                     point_history.append(landmark_list[8])

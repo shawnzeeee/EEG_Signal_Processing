@@ -1,6 +1,5 @@
 ﻿  gNautilusDemo.cpp
-C:\Program Files\EEG_Signal_Processing\HandGestureDataCollection\g.Nautilus\gNautilusDemo.cpp(457,22): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Program Files\EEG_Signal_Processing\HandGestureDataCollection\g.Nautilus\gNautilusDemo.cpp(459,62): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Program Files\EEG_Signal_Processing\HandGestureDataCollection\g.Nautilus\gNautilusDemo.cpp(460,62): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
 C:\Program Files\EEG_Signal_Processing\HandGestureDataCollection\g.Nautilus\gNautilusDemo.cpp(181,2): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
 C:\Program Files\EEG_Signal_Processing\HandGestureDataCollection\g.Nautilus\gNautilusDemo.cpp(183,2): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
 C:\Program Files\EEG_Signal_Processing\HandGestureDataCollection\g.Nautilus\gNautilusDemo.cpp(266,7): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
