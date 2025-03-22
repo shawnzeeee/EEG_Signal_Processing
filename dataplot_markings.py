@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 # Define the file path again
 #file_path = "EEG_Recordings/Daniel/BaseRecording/trial1.bin"
-file_path = "EEG_Recordings/data.bin"
+file_path = "EEG_Recordings/Shawn/1minOpenClose/trial5.bin"
 
 # Load the binary file and read as float32
 data_array = np.fromfile(file_path, dtype=np.float32)
@@ -27,18 +27,20 @@ classmarkers = reshaped_data[:, 4]  # 5th column: Class
 timestamps = reshaped_data[:, 5]  # Last column: timestamps
 
 # Plot the EEG data with timestamps on the x-axis and non-zero class markings
+start = 2000
+end = 4000
 plt.figure(figsize=(12, 8))
 for i in range(4):  # First 4 columns are EEG channels
     plt.subplot(4, 1, i + 1)
     
     # Plot the channel data
-    plt.plot(timestamps[500:2000], channel_data[500:2000, i], label=f'Channel {i+1}')
+    plt.plot(timestamps[start:end], channel_data[start:end, i], label=f'Channel {i+1}')
     
     # Find timestamps where class is non-zero
-    non_zero_indices = np.where(classmarkers[500:2000] != 0)[0]
+    non_zero_indices = np.where(classmarkers[start:end] != 0)[0]
     
     # Mark the non-zero class timestamps
-    plt.scatter(timestamps[non_zero_indices + 500], channel_data[non_zero_indices + 500, i], 
+    plt.scatter(timestamps[non_zero_indices + start], channel_data[non_zero_indices + start, i], 
                 color='red', label='Non-zero Class', zorder=5)
     
     plt.title(f'Channel {i+1}')
