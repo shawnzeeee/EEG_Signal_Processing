@@ -29,7 +29,7 @@
 //-------------------------------------------------------------------------------------
 #define DATA_FILE "data.bin"
 #define SAMPLE_RATE 250 // [Hz]
-#define DURATION_DAQ 20 // [s]
+#define DURATION_DAQ 60 // [s]
 #define DATA_READY_TRESHOLD_MS 30 // [ms]
 
 // Definition of network specific stuff.
@@ -569,8 +569,8 @@ void setup_config( GDS_GNAUTILUS_CONFIGURATION* config, unsigned int sampling_ra
 			config->Channels[j].Enabled = FALSE;
 	
 		config->Channels[j].Sensitivity = 187500.0;
-		config->Channels[j].BandpassFilterIndex = -1;
-		config->Channels[j].NotchFilterIndex = -1;
+		config->Channels[j].BandpassFilterIndex = 21;
+		config->Channels[j].NotchFilterIndex = 1;
 		config->Channels[j].BipolarChannel = -1;	
 		config->Channels[j].UsedForNoiseReduction = FALSE;
 		config->Channels[j].UsedForCar = FALSE;

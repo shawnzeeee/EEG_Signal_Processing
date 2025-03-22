@@ -14,7 +14,7 @@ trimmed_size = (data_array.size // 5) * 5
 trimmed_data = data_array[:trimmed_size]
 
 # Reshape into 5 columns: [Channel1, Channel2, Channel3, Channel4, Timestamp]
-reshaped_data = trimmed_data.reshape(-1, 5)
+reshaped_data = trimmed_data.reshape(-1, 6)
 
 # Save reshaped data to CSV file
 csv_filename = "reshaped_data.csv"
@@ -23,8 +23,8 @@ df = pd.DataFrame(data_array)
 df.to_csv(csv_filename, index=False)
 
 # Extract columns
-channel_data = reshaped_data[:, :4]  # First 4 columns: EEG readings
-timestamps = reshaped_data[:, 4]  # Last column: timestamps
+channel_data = reshaped_data[:, :5]  # First 4 columns: EEG readings
+timestamps = reshaped_data[:, 5]  # Last column: timestamps
 
 # Plot the EEG data with timestamps on the x-axis
 # Plot the EEG data with timestamps on the x-axis (first 1000 points)
