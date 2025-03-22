@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 # Define the file path again
 #file_path = "EEG_Recordings/Daniel/BaseRecording/trial1.bin"
-file_path = "EEG_Recordings/Daniel/ThumbOpen/trial4.bin"
+file_path = "EEG_Recordings/data.bin"
 
 # Load the binary file and read as float32
 data_array = np.fromfile(file_path, dtype=np.float32)
@@ -18,7 +18,8 @@ reshaped_data = trimmed_data.reshape(-1, 5)
 
 # Save reshaped data to CSV file
 csv_filename = "reshaped_data.csv"
-df = pd.DataFrame(reshaped_data, columns=["Channel 1", "Channel 2", "Channel 3", "Channel 4", "Timestamp"])
+#df = pd.DataFrame(reshaped_data, columns=["Channel 1", "Channel 2", "Channel 3", "Channel 4", "Timestamp"])
+df = pd.DataFrame(data_array)
 df.to_csv(csv_filename, index=False)
 
 # Extract columns

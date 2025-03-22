@@ -36,7 +36,7 @@
 //-------------------------------------------------------------------------------------
 #define HOST_IP "192.168.1.77" // Default address is the loopback address, else the ip of the computer running GDS.
 #define HOST_PORT 50223     // The default port of GDS is 50223.
-#define LOCAL_IP "192.168.186.1"// Default address is the loppback address, else the ip of the client machine.
+#define LOCAL_IP "192.168.1.88"// Default address is the loppback address, else the ip of the client machine.
 #define LOCAL_PORT 50224    // Any free port on the local machine.
 
 // Function declarations.
@@ -433,6 +433,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	try
 	{
 		float* data_buffer = new float[buffer_size_in_samples];
+		std::cout << "Buffer size in samples: " << buffer_size_in_samples << std::endl;
 		std::cout << "Start acquiring measurement data for " << DURATION_DAQ << "s." << std::endl;
 		std::ofstream file( DATA_FILE, std::ios_base::binary );
 		while ( total_acquired_scans < total_scans_to_acquire )
@@ -444,6 +445,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			size_t scans_available = 0;
 			ret = GDS_GetData( connectionHandle, &scans_available, data_buffer, buffer_size_in_samples );
+			//std::cout << scans_available << std::endl;
 			if ( ret.ErrorCode )
 			{
 				std::cerr << "ERROR on GDS_GetData: " << ret.ErrorMessage << std::endl;
@@ -452,13 +454,22 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			if ( scans_available > 0 )
 			{
-				int gesture_code = *(int*)pBuf;
-				std::cout << "Received Gesture Code: " << gesture_code << std::endl;
+				int gesture_code = *(float*)pBuf;
+				//std::cout << "Received Gesture Code: " << gesture_code << std::endl;
+				int total_floats = scans_available * buffer_size_per_scan;
 
+				for (int i = 0; i < total_floats; ++i) {
+					if (((total_acquired_scans * buffer_size_per_scan + i)+2) % 6 == 0 && total_acquired_scans + i >0) {
+						data_buffer[i] = static_cast<float>(gesture_code);
+					}
+				}
 				total_acquired_scans += scans_available;
 				file.write( (const char*) data_buffer, scans_available * buffer_size_per_scan * sizeof(float) );
-				std::cout << CONSOLE_ESCAPE_CODE_CLEAR_TO_THE_LEFT << CONSOLE_ESCAPE_CODE_CARRIAGE_RETURN << std::flush;
-				std::cout << total_acquired_scans << " from " << total_scans_to_acquire << " scans acquired";
+
+				//std::cout << CONSOLE_ESCAPE_CODE_CLEAR_TO_THE_LEFT << CONSOLE_ESCAPE_CODE_CARRIAGE_RETURN << std::flush;
+				std::cout << data_buffer[0] << " " << data_buffer[1] << " " << data_buffer[2]<< " " << data_buffer[3] << " " << data_buffer[4] 
+					<< " " << data_buffer[5] << " " << data_buffer[6] << " " << data_buffer[7] << std::endl;
+				//std::cout << total_acquired_scans << " from " << total_scans_to_acquire << " scans acquired";
 			}
 		}
 		std::cout << std::endl;
@@ -543,7 +554,7 @@ void setup_config( GDS_GNAUTILUS_CONFIGURATION* config, unsigned int sampling_ra
 
 	for (uint32_t j = 0; j < GDS_GNAUTILUS_CHANNELS_MAX; j++)
 	{
-		if (j < 8)
+		if (j < 5)
 			config->Channels[j].Enabled = TRUE;
 		else 
 			config->Channels[j].Enabled = FALSE;

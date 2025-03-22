@@ -95,14 +95,14 @@ def main():
 
     point_history_classifier = PointHistoryClassifier()
     # Read labels ###########################################################
-    with open('C:/Users/shawn/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/model/keypoint_classifier/keypoint_classifier_label.csv',
+    with open('C:/Program Files/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/model/keypoint_classifier/keypoint_classifier_label.csv',
               encoding='utf-8-sig') as f:
         keypoint_classifier_labels = csv.reader(f)
         keypoint_classifier_labels = [
             row[0] for row in keypoint_classifier_labels
         ]
     with open(
-            'C:/Users/shawn/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/model/point_history_classifier/point_history_classifier_label.csv',
+            'C:/Program Files/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/model/point_history_classifier/point_history_classifier_label.csv',
             encoding='utf-8-sig') as f:
         point_history_classifier_labels = csv.reader(f)
         point_history_classifier_labels = [
@@ -160,13 +160,15 @@ def main():
                 pre_processed_point_history_list = pre_process_point_history(
                     debug_image, point_history)
                 # Write to the dataset file
-                logging_csv(number, mode, pre_processed_landmark_list,
-                            pre_processed_point_history_list)
+                #logging_csv(number, mode, pre_processed_landmark_list,
+                 #           pre_processed_point_history_list)
 
                 # Hand sign classification
                 hand_sign_id = keypoint_classifier(pre_processed_landmark_list)
                 
                 # Send gesture classification to shared memory
+                if hand_sign_id == 3:
+                    hand_sign_id = 0
                 send_gesture_classification(hand_sign_id)
 
                 if hand_sign_id == 2:  # Point gesture
