@@ -17,7 +17,7 @@ trimmed_data = data_array[:trimmed_size]
 reshaped_data = trimmed_data.reshape(-1, 6)
 
 #adding in timestamp markings for classification 
-
+#adding new line
 # Save reshaped data to CSV file
 csv_filename = "reshaped_data.csv"
 #df = pd.DataFrame(reshaped_data, columns=["Channel 1", "Channel 2", "Channel 3", "Channel 4", "Timestamp"])
