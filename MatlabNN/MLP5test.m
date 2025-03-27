@@ -12,4 +12,4 @@ disp(YProbabilities);
 % Get the predicted class with highest probability
 [~, predictedClass] = max(YProbabilities, [], 2);
 disp("Predicted Class:");
-disp(predictedClass); % Adjusting MATLAB 1-based index to match 0-12 class labels
+disp(predictedClass - 1);

@@ -4,14 +4,14 @@
 %each class occurs and extracting features to train the NN
 
 % Load and reshape EEG data into 6 columns, plus padding and label
-fid = fopen('data.bin', 'r');
+fid = fopen('EEG_Recordings/Nick/1minOpenClose/trial1.bin', 'r');
 data = fread(fid, 'float32');
 fclose(fid);
 
 % Reshape to 6 columns data
 channel_data = reshape(data, 6, [])';
 train_counter = 0;
-for i = 100:5000
+for i = 5000:15000
     if channel_data(i,5) ~= 0
         Class = channel_data(i,5);
         leftT = channel_data(i,6) - 250;
@@ -28,7 +28,7 @@ for i = 100:5000
             XFeatures = [XFeatures1; XFeatures2; XFeatures3; XFeatures4]';
             YClasses = categorical(Class, 0:12);
             %setup options for training (can alter)
-            options = trainingOptions("adam",MaxEpochs=30,MiniBatchSize=32,InitialLearnRate=0.001, ValidationFrequency=10,plots="training-progress",Verbose=true);
+            options = trainingOptions("adam",MaxEpochs=30,MiniBatchSize=32,InitialLearnRate=0.001, ValidationFrequency=10,plots="none",Verbose=true);
             %train network
             net = trainNetwork(XFeatures, YClasses, layers, options);
             disp("Training NN with class " + Class);
