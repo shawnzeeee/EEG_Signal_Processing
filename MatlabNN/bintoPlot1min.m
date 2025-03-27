@@ -1,17 +1,16 @@
-fid = fopen('EEG_Recordings/Nick/1minOpenClose/trial5.bin', 'r');
+fid = fopen('EEG_Recordings/Nick/1minBaseline/trial5.bin', 'r');
 data = fread(fid, 'float32'); % Adjust format if needed
 fclose(fid);
 
-% Reshape the data into a 6 or 5-col format (each column represents one time step)
+% Reshape the data into a 6-col format (each column represents one time step)
 reshaped_data = reshape(data, 6, [])'; % Transpose so each row is a time step
-%reshaped_data = reshape(data, 5, [])'; % Transpose so each row is a time step
 
 % Extract timestamp and channel readings
 timestamps = reshaped_data(:, 6);       %6th column: Timestamps
 classmarkers = reshaped_data(:, 5);     %5th col : classes
 channel_data = reshaped_data(:, 1:4);   %Next 4 columns: Channel readings
 
-sTime = 5000;
+sTime = 3000;
 eTime = 15000;
 % Plot EEG data with timestamps as the x-axis
 %ch1 = C3
