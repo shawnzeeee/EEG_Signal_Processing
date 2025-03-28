@@ -1,5 +1,5 @@
 %Load data for testing
-fid2 = fopen('EEG_Recordings/Daniel/FullHandClose/trial5.bin', 'r');
+fid2 = fopen('EEG_Recordings/Daniel/FullHandOpen/trial4.bin', 'r');
 data2 = fread(fid2, 'float32'); % Adjust format if needed
 fclose(fid2);
 
@@ -14,14 +14,13 @@ XFeaturestest = [XFeatures1test; XFeatures2test; XFeatures3test; XFeatures4test]
 
 YProbabilities = predict(net, XFeaturestest);  % Get probabilities for each class
 %Yclassify = classify(net, XFeaturestest);
-
-% Display probabilities
-disp("Predicted Class Probabilities:");
-disp(YProbabilities);
-
 %disp("Predicted Class classification:");
 %disp("Classified Class:");
 %disp(Yclassify);
+
+% Display probabilities
+%disp("Predicted Class Probabilities:");
+%disp(YProbabilities);
 
 % Get the predicted class with highest probability
 [~, predictedClass] = max(YProbabilities, [], 2);
