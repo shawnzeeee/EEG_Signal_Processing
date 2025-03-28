@@ -2,7 +2,7 @@
 
 layers = [
     featureInputLayer(20)            % Assuming 5 EEG features per 4 channels
-    fullyConnectedLayer(16)          % First hidden layer with 16 neurons
+    fullyConnectedLayer(32)          % First hidden layer with 16 neurons
     reluLayer                        % Activation function
     fullyConnectedLayer(13)          % Output layer (10 individual finger open/close, 2 full hand open/close, 1 nothing/baseline)
     softmaxLayer                     % Converts outputs to probabilities
@@ -13,9 +13,9 @@ layers = [
 //Training options chosen:
 
 Optimizer = "adam"
-MaxEpochs = 20
-MiniBatchSize = 32
+MaxEpochs = 30
+MiniBatchSize = 64
 Initial learning rate = 0.001
 Validation Freq = 10
 
-options = trainingOptions("adam",MaxEpochs=20,MiniBatchSize=32,InitialLearnRate=0.001, ValidationFrequency=10,plots="training-progress",Verbose=true);
+options = trainingOptions("adam",MaxEpochs=30,MiniBatchSize=64,InitialLearnRate=0.001, ValidationFrequency=10,plots="training-progress",Verbose=true);
