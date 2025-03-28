@@ -12,4 +12,10 @@ layers = [
 
 //Training options chosen:
 
+Optimizer = "adam"
+MaxEpochs = 20
+MiniBatchSize = 32
+Initial learning rate = 0.001
+Validation Freq = 10
+
 options = trainingOptions("adam",MaxEpochs=20,MiniBatchSize=32,InitialLearnRate=0.001, ValidationFrequency=10,plots="training-progress",Verbose=true);

@@ -5,7 +5,8 @@
 
 % Load and reshape EEG data into 6 columns, plus padding and label
 %fid = fopen('EEG_Recordings/Nick/1minOpenClose/trial5.bin', 'r');
-fid = fopen('EEG_Recordings/Shawn/1minOpenClose/trial1.bin', 'r');
+%fid = fopen('EEG_Recordings/Shawn/1minOpenClose/trial1.bin', 'r');
+fid = fopen('EEG_Recordings/Shawn/ArmMovement/OpenClose/data.bin', 'r');
 
 data = fread(fid, 'float32');
 fclose(fid);
