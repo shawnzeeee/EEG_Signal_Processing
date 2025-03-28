@@ -9,7 +9,7 @@ fclose(fid);
 
 %THIS LINE NEEDS TO BE COMMENTED OUT FOR THE FIRST TRAINING ITERATION,
 %OTHERWISE IT NEEDS TO BE HERE TO TRAIN CONTINUOUSLY OVER DIFFERENT FILES
-%layers = layerGraph(net); 
+layers = layerGraph(net); 
 
 % Reshape to 6 columns data
 channel_data = reshape(data, 6, [])';
@@ -39,7 +39,7 @@ for i = 3000:15000
     end
 end
 %setup options for training (can alter)
-options = trainingOptions("adam",MaxEpochs=20,MiniBatchSize=32,InitialLearnRate=0.001, ValidationFrequency=10,plots="training-progress",Verbose=true);
+options = trainingOptions("adam",MaxEpochs=30,MiniBatchSize=64,InitialLearnRate=0.001, ValidationFrequency=10,plots="training-progress",Verbose=true);
 %train network
 net = trainNetwork(X_all, Y_all, layers, options);
 

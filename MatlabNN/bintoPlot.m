@@ -1,4 +1,4 @@
-fid = fopen('EEG_Recordings/Daniel/BaseRecording/trial4.bin', 'r');
+fid = fopen('EEG_Recordings/Daniel/BaseRecording/trial3.bin', 'r');
 data = fread(fid, 'float32'); % Adjust format if needed
 fclose(fid);
 
