@@ -1,5 +1,5 @@
 %Load data for testing
-fid2 = fopen('EEG_Recordings/Daniel/FullHandOpen/trial5.bin', 'r');
+fid2 = fopen('EEG_Recordings/Daniel/FullHandClose/trial5.bin', 'r');
 data2 = fread(fid2, 'float32'); % Adjust format if needed
 fclose(fid2);
 
