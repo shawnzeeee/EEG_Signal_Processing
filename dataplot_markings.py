@@ -3,7 +3,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Define the file path again
-#file_path = "EEG_Recordings/Daniel/BaseRecording/trial1.bin"
 file_path = "EEG_Recordings/Shawn/1minOpenClose/trial5.bin"
 
 # Load the binary file and read as float32
