@@ -29,14 +29,14 @@
 //-------------------------------------------------------------------------------------
 #define DATA_FILE "data.bin"
 #define SAMPLE_RATE 250 // [Hz]
-#define DURATION_DAQ 60 // [s]
+#define DURATION_DAQ 180 // [s]
 #define DATA_READY_TRESHOLD_MS 30 // [ms]
 
 // Definition of network specific stuff.
-//-------------------------------------------------------------------------------------
-#define HOST_IP "207.23.181.48" // Default address is the loopback address, else the ip of the computer running GDS.
+//-----------------------------------------------------------	--------------------------
+#define HOST_IP "142.58.221.210" // Default address is the loopback address, else the ip of the computer running GDS.
 #define HOST_PORT 50223     // The default port of GDS is 50223.
-#define LOCAL_IP "207.23.206.235"// Default address is the loppback address, else the ip of the client machine.
+#define LOCAL_IP "207.23.208.188"// Default address is the loppback address, else the ip of the client machine.
 #define LOCAL_PORT 50224    // Any free port on the local machine.
 
 // Function declarations.
@@ -465,6 +465,48 @@ int _tmain(int argc, _TCHAR* argv[])
 						if (p_gesture_code == gesture_code) {
 							send_code = 0;
 						}
+						else {
+							//Thump Open
+							if (p_gesture_code == 10 && gesture_code == 1) {
+								send_code = 1;
+							}
+							//Thump Close
+							if (p_gesture_code == 1 && gesture_code == 10) {
+								send_code = 2;
+							}
+							//Index Open
+							if (p_gesture_code == 10 && gesture_code == 3) {
+								send_code = 3;
+							}
+							//Index Close
+							if (p_gesture_code == 3 && gesture_code == 10) {
+								send_code = 4;
+							}
+							//Middle Open
+							if (p_gesture_code == 10 && gesture_code == 5) {
+								send_code = 5;
+							}
+							//Middle Close
+							if (p_gesture_code == 5 && gesture_code == 10) {
+								send_code = 6;
+							}
+							//Ring Pinky Open
+							if (p_gesture_code == 10 && gesture_code == 7) {
+								send_code = 7;
+							}
+							//Ring Pinky Close
+							if (p_gesture_code == 7 && gesture_code == 10) {
+								send_code = 8;
+							}
+							//Full Open
+							if (p_gesture_code == 10 && gesture_code == 9) {
+								send_code = 9;
+							}
+							//Full Close
+							if (p_gesture_code == 9 && gesture_code == 10) {
+								send_code = 10;
+							}
+						}
 						data_buffer[i] = static_cast<float>(send_code);
 						p_gesture_code = gesture_code;
 					}
@@ -569,7 +611,7 @@ void setup_config( GDS_GNAUTILUS_CONFIGURATION* config, unsigned int sampling_ra
 			config->Channels[j].Enabled = FALSE;
 	
 		config->Channels[j].Sensitivity = 187500.0;
-		config->Channels[j].BandpassFilterIndex = 21;
+		config->Channels[j].BandpassFilterIndex = 16;
 		config->Channels[j].NotchFilterIndex = 1;
 		config->Channels[j].BipolarChannel = -1;	
 		config->Channels[j].UsedForNoiseReduction = FALSE;

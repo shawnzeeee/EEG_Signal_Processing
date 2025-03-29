@@ -168,12 +168,11 @@ def main():
                 
                 # Send gesture classification to shared memory
                 hand_sign_id_temp = hand_sign_id
-                
-                if hand_sign_id_temp == 3 or hand_sign_id_temp == 0:
-                    hand_sign_id_temp = 11
-                elif hand_sign_id_temp == 1:
-                    hand_sign_id_temp = 12
-                send_gesture_classification(hand_sign_id_temp)
+            
+
+                hand_gesture_map = [9,10,3,7,0,1,5]
+                #print(hand_sign_id_temp, hand_gesture_map[hand_sign_id_temp])
+                send_gesture_classification(hand_gesture_map[hand_sign_id_temp])
 
                 if hand_sign_id == 2:  # Point gesture
                     point_history.append(landmark_list[8])
