@@ -1,9 +1,9 @@
 %Load data for testing
-fid2 = fopen('EEG_Recordings/Daniel/FullHandClose/trial5.bin', 'r');
+fid2 = fopen('EEG_Recordings/Nick/singleHandOpen/trial5.bin', 'r');
 data2 = fread(fid2, 'float32'); % Adjust format if needed
 fclose(fid2);
 
-test_data = reshape(data2, 5, [])';
+test_data = reshape(data2, 6, [])';
 
 XFeatures1test = extractEEGFeatures(test_data(500:2000,1),250);
 XFeatures2test = extractEEGFeatures(test_data(500:2000,2),250);

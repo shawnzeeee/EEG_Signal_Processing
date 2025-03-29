@@ -1,0 +1,21 @@
+//MLP creation layout:
+
+layers = [
+    featureInputLayer(20)            % Assuming 5 EEG features per 4 channels
+    fullyConnectedLayer(32)          % First hidden layer with 16 neurons
+    reluLayer                        % Activation function
+    fullyConnectedLayer(13)          % Output layer (10 individual finger open/close, 2 full hand open/close, 1 nothing/baseline)
+    softmaxLayer                     % Converts outputs to probabilities
+    classificationLayer              % Final classification step
+];
+
+
+//Training options chosen: ONLY USING NO GEL DATA GATHERED
+
+Optimizer = "adam"
+MaxEpochs = 30
+MiniBatchSize = 64
+Initial learning rate = 0.001
+Validation Freq = 10
+
+options = trainingOptions("adam",MaxEpochs=30,MiniBatchSize=64,InitialLearnRate=0.001, ValidationFrequency=10,plots="training-progress",Verbose=true);

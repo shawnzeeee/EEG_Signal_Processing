@@ -3,7 +3,7 @@
 %this script will train the NN from a large data file for the baseline
 
 % Load and reshape EEG data into 6 columns, plus padding and label
-fid = fopen('EEG_Recordings/Nick/1minBaseline/trial5.bin', 'r');
+fid = fopen('EEG_Recordings/Nick/1minBaseline/trial10.bin', 'r');
 data = fread(fid, 'float32');
 fclose(fid);
 
