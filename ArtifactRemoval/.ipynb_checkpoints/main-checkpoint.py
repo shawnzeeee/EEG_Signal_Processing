@@ -11,7 +11,7 @@ file_path = "EEG_Recordings/Daniel/1minOpenClose_BP2/trial3.bin"
 
 # Load the binary file and read as float32
 data_array = np.fromfile(file_path, dtype=np.float32)
-11
+
 start = 500
 # Ensure data size is a multiple of 6 (each set: 4 channel readings + class + timestamp)
 trimmed_size = (data_array.size // 6) * 6
