@@ -6,9 +6,9 @@ fclose(fid2);
 
 test_data = reshape(data2, 6, [])';
 
-XFeatures1test = extractEEGFeatures(test_data(500:15000,1),250);
-XFeatures2test = extractEEGFeatures(test_data(500:15000,2),250);
-XFeatures3test = extractEEGFeatures(test_data(500:15000,3),250);
-XFeatures4test = extractEEGFeatures(test_data(500:15000,4),250);
+XFeat1test = extractEEGFeatures(test_data(500:15000,1),250);
+XFeat2test = extractEEGFeatures(test_data(500:15000,2),250);
+XFeat3test = extractEEGFeatures(test_data(500:15000,3),250);
+XFeat4test = extractEEGFeatures(test_data(500:15000,4),250);
 
-XFeaturestest = [XFeatures1test; XFeatures2test; XFeatures3test; XFeatures4test]';
+XFeaturestest = [XFeat1test; XFeat2test; XFeat3test; XFeat4test]';
