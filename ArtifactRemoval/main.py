@@ -4,8 +4,10 @@ import matplotlib.pyplot as plt
 from sklearn.decomposition import FastICA
 
 # Define the file path again
-#file_path = "EEG_Recordings/Daniel/BaseRecording/trial1.bin"
-file_path = "./EEG_Recordings/Shawn/1minOpenClose/trial5.bin"
+file_path = "EEG_Recordings/Daniel/1minOpenClose_BP2/trial3.bin"
+#file_path = "./EEG_Recordings/Nick/1minOpenClose/trial11.bin"
+#file_path = "./EEG_Recordings/Nick/trial11.bin"
+
 
 # Load the binary file and read as float32
 data_array = np.fromfile(file_path, dtype=np.float32)
@@ -22,20 +24,33 @@ reshaped_data = trimmed_data.reshape(-1, 6)
 # Extract the EEG channels (first 4 columns)
 eeg_channels = reshaped_data[start:, :4]
 
-class_labels = reshaped_data[start:, 4]  # Classification labels (11 for open, 12 for close)
+# Update classification labels based on the provided mapping
+class_labels = reshaped_data[start:, 4]
+class_labels = np.where(class_labels == 0, 0, class_labels)  # Nothing
+class_labels = np.where(class_labels == 1, 1, class_labels)  # Thumb open
+class_labels = np.where(class_labels == 2, 2, class_labels)  # Thumb close
+class_labels = np.where(class_labels == 3, 3, class_labels)  # Index open
+class_labels = np.where(class_labels == 4, 4, class_labels)  # Index close
+class_labels = np.where(class_labels == 5, 5, class_labels)  # Middle open
+class_labels = np.where(class_labels == 6, 6, class_labels)  # Middle close
+class_labels = np.where(class_labels == 7, 7, class_labels)  # Ring and pinky open
+class_labels = np.where(class_labels == 8, 8, class_labels)  # Ring and pinky close
+class_labels = np.where(class_labels == 9, 9, class_labels)  # Full hand open
+class_labels = np.where(class_labels == 10, 10, class_labels)  # Full hand close
 
+# Find all instances of classifications (1 to 10)
+classification_indices = np.where((class_labels >= 1) & (class_labels <= 10))[0]
 
-# Find the first instance of a classification (11 or 12)
-classification_indices = np.where((class_labels == 11) | (class_labels == 12))[0]
 if len(classification_indices) > 0:
-    first_classification_index = classification_indices[0]
+    first_classification_index = classification_indices[20]
+    #first_classification_index = 1000
 else:
-    raise ValueError("No classification labels (11 or 12) found in the data.")
+    raise ValueError("No classification labels (1 to 10) found in the data.")
 
 # Define the window size (500 points) and calculate the start and end indices
 window_size = 500
 half_window = window_size // 2
-start_index = max(0, first_classification_index - half_window)
+start_index = max(0, first_classification_index - half_window)  # Default to first classification index
 end_index = start_index + window_size
 
 # Ensure the window does not exceed the data bounds
@@ -57,10 +72,36 @@ for i in range(windowed_eeg.shape[1]):
     axes[i].legend()
     # Overlay classification labels
     for j in range(len(windowed_labels)):
-        if windowed_labels[j] == 11:  # Open hand
-            axes[i].axvline(x=j, color='green', linestyle='--', alpha=0.5, label='Open Hand' if j == 0 else "")
-        elif windowed_labels[j] == 12:  # Close hand
-            axes[i].axvline(x=j, color='red', linestyle='--', alpha=0.5, label='Close Hand' if j == 0 else "")
+        if windowed_labels[j] == 1:  # Thumb open
+            axes[i].axvline(x=j, color='blue', linestyle='--', alpha=0.5, label='Thumb Open' if j == 0 else "")
+            axes[i].text(j, windowed_eeg[:, i].max(), 'Thumb Open', color='blue', fontsize=8, rotation=90, va='bottom')
+        elif windowed_labels[j] == 2:  # Thumb close
+            axes[i].axvline(x=j, color='cyan', linestyle='--', alpha=0.5, label='Thumb Close' if j == 0 else "")
+            axes[i].text(j, windowed_eeg[:, i].max(), 'Thumb Close', color='cyan', fontsize=8, rotation=90, va='bottom')
+        elif windowed_labels[j] == 3:  # Index open
+            axes[i].axvline(x=j, color='green', linestyle='--', alpha=0.5, label='Index Open' if j == 0 else "")
+            axes[i].text(j, windowed_eeg[:, i].max(), 'Index Open', color='green', fontsize=8, rotation=90, va='bottom')
+        elif windowed_labels[j] == 4:  # Index close
+            axes[i].axvline(x=j, color='lime', linestyle='--', alpha=0.5, label='Index Close' if j == 0 else "")
+            axes[i].text(j, windowed_eeg[:, i].max(), 'Index Close', color='lime', fontsize=8, rotation=90, va='bottom')
+        elif windowed_labels[j] == 5:  # Middle open
+            axes[i].axvline(x=j, color='yellow', linestyle='--', alpha=0.5, label='Middle Open' if j == 0 else "")
+            axes[i].text(j, windowed_eeg[:, i].max(), 'Middle Open', color='yellow', fontsize=8, rotation=90, va='bottom')
+        elif windowed_labels[j] == 6:  # Middle close
+            axes[i].axvline(x=j, color='orange', linestyle='--', alpha=0.5, label='Middle Close' if j == 0 else "")
+            axes[i].text(j, windowed_eeg[:, i].max(), 'Middle Close', color='orange', fontsize=8, rotation=90, va='bottom')
+        elif windowed_labels[j] == 7:  # Ring and pinky open
+            axes[i].axvline(x=j, color='purple', linestyle='--', alpha=0.5, label='Ring and Pinky Open' if j == 0 else "")
+            axes[i].text(j, windowed_eeg[:, i].max(), 'Ring & Pinky Open', color='purple', fontsize=8, rotation=90, va='bottom')
+        elif windowed_labels[j] == 8:  # Ring and pinky close
+            axes[i].axvline(x=j, color='magenta', linestyle='--', alpha=0.5, label='Ring and Pinky Close' if j == 0 else "")
+            axes[i].text(j, windowed_eeg[:, i].max(), 'Ring & Pinky Close', color='magenta', fontsize=8, rotation=90, va='bottom')
+        elif windowed_labels[j] == 9:  # Full hand open
+            axes[i].axvline(x=j, color='red', linestyle='--', alpha=0.5, label='Full Hand Open' if j == 0 else "")
+            axes[i].text(j, windowed_eeg[:, i].max(), 'Full Hand Open', color='red', fontsize=8, rotation=90, va='bottom')
+        elif windowed_labels[j] == 10:  # Full hand close
+            axes[i].axvline(x=j, color='brown', linestyle='--', alpha=0.5, label='Full Hand Close' if j == 0 else "")
+            axes[i].text(j, windowed_eeg[:, i].max(), 'Full Hand Close', color='brown', fontsize=8, rotation=90, va='bottom')
 axes[-1].set_xlabel("Samples")
 axes[0].legend(loc='upper right')  # Add legend to the first subplot
 plt.tight_layout(rect=[0, 0, 1, 0.96])
@@ -70,14 +111,11 @@ plt.show()
 ica = FastICA(n_components=windowed_eeg.shape[1], random_state=42)
 ica_sources = ica.fit_transform(windowed_eeg)  # Independent components
 
-ica_sources[:, 0] = 0  # Zero out the first component
-ica_sources[:, 1] = 0  # Zero out the second component
+#ica_sources[:, 0] = 0  # Zero out the first component
+#ica_sources[:, 1] = 0  # Zero out the second component
 
 # Reconstruct the signal using the modified ICA sources
 reconstructed_signal = ica.inverse_transform(ica_sources)
-
-
-
 
 # Plot the ICA components
 fig, axes = plt.subplots(ica_sources.shape[1], 1, figsize=(12, 8), sharex=True)
@@ -89,19 +127,34 @@ for i in range(ica_sources.shape[1]):
     axes[i].legend()
     # Overlay classification labels
     for j in range(len(windowed_labels)):
-        if windowed_labels[j] == 11:  # Open hand
-            axes[i].axvline(x=j, color='green', linestyle='--', alpha=0.5, label='Open Hand' if j == 0 else "")
-        elif windowed_labels[j] == 12:  # Close hand
-            axes[i].axvline(x=j, color='red', linestyle='--', alpha=0.5, label='Close Hand' if j == 0 else "")
+        if windowed_labels[j] == 1:  # Thumb open
+            axes[i].axvline(x=j, color='blue', linestyle='--', alpha=0.5, label='Thumb Open' if j == 0 else "")
+        elif windowed_labels[j] == 2:  # Thumb close
+            axes[i].axvline(x=j, color='cyan', linestyle='--', alpha=0.5, label='Thumb Close' if j == 0 else "")
+        elif windowed_labels[j] == 3:  # Index open
+            axes[i].axvline(x=j, color='green', linestyle='--', alpha=0.5, label='Index Open' if j == 0 else "")
+        elif windowed_labels[j] == 4:  # Index close
+            axes[i].axvline(x=j, color='lime', linestyle='--', alpha=0.5, label='Index Close' if j == 0 else "")
+        elif windowed_labels[j] == 5:  # Middle open
+            axes[i].axvline(x=j, color='yellow', linestyle='--', alpha=0.5, label='Middle Open' if j == 0 else "")
+        elif windowed_labels[j] == 6:  # Middle close
+            axes[i].axvline(x=j, color='orange', linestyle='--', alpha=0.5, label='Middle Close' if j == 0 else "")
+        elif windowed_labels[j] == 7:  # Ring and pinky open
+            axes[i].axvline(x=j, color='purple', linestyle='--', alpha=0.5, label='Ring and Pinky Open' if j == 0 else "")
+        elif windowed_labels[j] == 8:  # Ring and pinky close
+            axes[i].axvline(x=j, color='magenta', linestyle='--', alpha=0.5, label='Ring and Pinky Close' if j == 0 else "")
+        elif windowed_labels[j] == 9:  # Full hand open
+            axes[i].axvline(x=j, color='red', linestyle='--', alpha=0.5, label='Full Hand Open' if j == 0 else "")
+        elif windowed_labels[j] == 10:  # Full hand close
+            axes[i].axvline(x=j, color='brown', linestyle='--', alpha=0.5, label='Full Hand Close' if j == 0 else "")
 axes[-1].set_xlabel("Samples")
 axes[0].legend(loc='upper right')  # Add legend to the first subplot
 plt.tight_layout(rect=[0, 0, 1, 0.96])
 plt.show()
 
-
-# Plot the reconstructed signal
+# Plot the reconstructed EEG signals
 fig, axes = plt.subplots(reconstructed_signal.shape[1], 1, figsize=(12, 8), sharex=True)
-fig.suptitle("Reconstructed EEG Signal (After Removing First and Third ICA Components)", fontsize=16)
+fig.suptitle("Reconstructed EEG Signals", fontsize=16)
 for i in range(reconstructed_signal.shape[1]):
     axes[i].plot(reconstructed_signal[:, i], label=f'Reconstructed Channel {i+1}')
     axes[i].set_title(f"Reconstructed Channel {i+1}")
@@ -109,12 +162,29 @@ for i in range(reconstructed_signal.shape[1]):
     axes[i].legend()
     # Overlay classification labels
     for j in range(len(windowed_labels)):
-        if windowed_labels[j] == 11:  # Open hand
-            axes[i].axvline(x=j, color='green', linestyle='--', alpha=0.5, label='Open Hand' if j == 0 else "")
-        elif windowed_labels[j] == 12:  # Close hand
-            axes[i].axvline(x=j, color='red', linestyle='--', alpha=0.5, label='Close Hand' if j == 0 else "")
+        if windowed_labels[j] == 1:  # Thumb open
+            axes[i].axvline(x=j, color='blue', linestyle='--', alpha=0.5, label='Thumb Open' if j == 0 else "")
+        elif windowed_labels[j] == 2:  # Thumb close
+            axes[i].axvline(x=j, color='cyan', linestyle='--', alpha=0.5, label='Thumb Close' if j == 0 else "")
+        elif windowed_labels[j] == 3:  # Index open
+            axes[i].axvline(x=j, color='green', linestyle='--', alpha=0.5, label='Index Open' if j == 0 else "")
+        elif windowed_labels[j] == 4:  # Index close
+            axes[i].axvline(x=j, color='lime', linestyle='--', alpha=0.5, label='Index Close' if j == 0 else "")
+        elif windowed_labels[j] == 5:  # Middle open
+            axes[i].axvline(x=j, color='yellow', linestyle='--', alpha=0.5, label='Middle Open' if j == 0 else "")
+        elif windowed_labels[j] == 6:  # Middle close
+            axes[i].axvline(x=j, color='orange', linestyle='--', alpha=0.5, label='Middle Close' if j == 0 else "")
+        elif windowed_labels[j] == 7:  # Ring and pinky open
+            axes[i].axvline(x=j, color='purple', linestyle='--', alpha=0.5, label='Ring and Pinky Open' if j == 0 else "")
+        elif windowed_labels[j] == 8:  # Ring and pinky close
+            axes[i].axvline(x=j, color='magenta', linestyle='--', alpha=0.5, label='Ring and Pinky Close' if j == 0 else "")
+        elif windowed_labels[j] == 9:  # Full hand open
+            axes[i].axvline(x=j, color='red', linestyle='--', alpha=0.5, label='Full Hand Open' if j == 0 else "")
+        elif windowed_labels[j] == 10:  # Full hand close
+            axes[i].axvline(x=j, color='brown', linestyle='--', alpha=0.5, label='Full Hand Close' if j == 0 else "")
 axes[-1].set_xlabel("Samples")
 axes[0].legend(loc='upper right')  # Add legend to the first subplot
 plt.tight_layout(rect=[0, 0, 1, 0.96])
 plt.show()
+
 
