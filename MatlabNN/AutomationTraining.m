@@ -4,9 +4,9 @@
 %each class occurs and extracting features to train the NN
 
 % Load and reshape EEG data into 6 columns, plus padding and label
-fid = fopen('EEG_Recordings/Nick/1minOpenClose/trial10.bin', 'r');
+%fid = fopen('EEG_Recordings/Nick/1minOpenClose/trial10.bin', 'r');
 %fid = fopen('EEG_Recordings/Shawn/1minOpenClose/trial5.bin', 'r');
-%fid = fopen('EEG_Recordings/Shawn/ArmMovement/OpenClose/data.bin', 'r');
+fid = fopen('EEG_Recordings/Daniel/3minIndexOpenClose_BP2/trial2.bin', 'r');
 
 data = fread(fid, 'float32');
 fclose(fid);
@@ -20,7 +20,7 @@ channel_data = reshape(data, 6, [])';
 train_counter = 0;
 X_all = [];
 Y_all = [];
-for i = 5000:15000
+for i = 5000:45000
     if channel_data(i,5) ~= 0
         Class = channel_data(i,5);
         leftT = channel_data(i,6) - 250;

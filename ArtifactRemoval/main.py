@@ -42,7 +42,11 @@ class_labels = np.where(class_labels == 10, 10, class_labels)  # Full hand close
 classification_indices = np.where((class_labels >= 1) & (class_labels <= 10))[0]
 
 if len(classification_indices) > 0:
+<<<<<<< HEAD
     first_classification_index = classification_indices[11]
+=======
+    first_classification_index = classification_indices[20]
+>>>>>>> b76072277ed7e0667e92363f27a7c55bfc055a2e
     #first_classification_index = 1000
 else:
     raise ValueError("No classification labels (1 to 10) found in the data.")
@@ -152,4 +156,42 @@ axes[0].legend(loc='upper right')  # Add legend to the first subplot
 plt.tight_layout(rect=[0, 0, 1, 0.96])
 plt.show()
 
+<<<<<<< HEAD
+=======
+# Plot the reconstructed EEG signals
+fig, axes = plt.subplots(reconstructed_signal.shape[1], 1, figsize=(12, 8), sharex=True)
+fig.suptitle("Reconstructed EEG Signals", fontsize=16)
+for i in range(reconstructed_signal.shape[1]):
+    axes[i].plot(reconstructed_signal[:, i], label=f'Reconstructed Channel {i+1}')
+    axes[i].set_title(f"Reconstructed Channel {i+1}")
+    axes[i].set_ylabel("Amplitude")
+    axes[i].legend()
+    # Overlay classification labels
+    for j in range(len(windowed_labels)):
+        if windowed_labels[j] == 1:  # Thumb open
+            axes[i].axvline(x=j, color='blue', linestyle='--', alpha=0.5, label='Thumb Open' if j == 0 else "")
+        elif windowed_labels[j] == 2:  # Thumb close
+            axes[i].axvline(x=j, color='cyan', linestyle='--', alpha=0.5, label='Thumb Close' if j == 0 else "")
+        elif windowed_labels[j] == 3:  # Index open
+            axes[i].axvline(x=j, color='green', linestyle='--', alpha=0.5, label='Index Open' if j == 0 else "")
+        elif windowed_labels[j] == 4:  # Index close
+            axes[i].axvline(x=j, color='lime', linestyle='--', alpha=0.5, label='Index Close' if j == 0 else "")
+        elif windowed_labels[j] == 5:  # Middle open
+            axes[i].axvline(x=j, color='yellow', linestyle='--', alpha=0.5, label='Middle Open' if j == 0 else "")
+        elif windowed_labels[j] == 6:  # Middle close
+            axes[i].axvline(x=j, color='orange', linestyle='--', alpha=0.5, label='Middle Close' if j == 0 else "")
+        elif windowed_labels[j] == 7:  # Ring and pinky open
+            axes[i].axvline(x=j, color='purple', linestyle='--', alpha=0.5, label='Ring and Pinky Open' if j == 0 else "")
+        elif windowed_labels[j] == 8:  # Ring and pinky close
+            axes[i].axvline(x=j, color='magenta', linestyle='--', alpha=0.5, label='Ring and Pinky Close' if j == 0 else "")
+        elif windowed_labels[j] == 9:  # Full hand open
+            axes[i].axvline(x=j, color='red', linestyle='--', alpha=0.5, label='Full Hand Open' if j == 0 else "")
+        elif windowed_labels[j] == 10:  # Full hand close
+            axes[i].axvline(x=j, color='brown', linestyle='--', alpha=0.5, label='Full Hand Close' if j == 0 else "")
+axes[-1].set_xlabel("Samples")
+axes[0].legend(loc='upper right')  # Add legend to the first subplot
+plt.tight_layout(rect=[0, 0, 1, 0.96])
+plt.show()
+
+>>>>>>> b76072277ed7e0667e92363f27a7c55bfc055a2e
 

@@ -1,5 +1,4 @@
 //MLP creation layout:
-
 layers = [
     featureInputLayer(20)            % Assuming 5 EEG features per 4 channels
     fullyConnectedLayer(32)          % First hidden layer with 16 neurons
@@ -9,9 +8,7 @@ layers = [
     classificationLayer              % Final classification step
 ];
 
-
 //Training options chosen:
-
 Optimizer = "adam"
 MaxEpochs = 30
 MiniBatchSize = 64
@@ -19,3 +16,4 @@ Initial learning rate = 0.001
 Validation Freq = 10
 
 options = trainingOptions("adam",MaxEpochs=30,MiniBatchSize=64,InitialLearnRate=0.001, ValidationFrequency=10,plots="training-progress",Verbose=true);
+
