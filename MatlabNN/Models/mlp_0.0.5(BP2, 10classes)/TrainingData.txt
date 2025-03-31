@@ -1,0 +1,8 @@
+Training data used:
+
+Daniel  3min    Open/Close  Index	    trial1, trial2
+Daniel  3min    Open/Close  Middle	    trial1
+Nick    3min    Open/Close  Thumb	    trial1, trial2
+Nick    3min    Open/Close  Ring/Pinky  trial1
+Nick    3min    Open/Close  Index       trial1
+Nick    3min    Open/Close  Middle      trial1

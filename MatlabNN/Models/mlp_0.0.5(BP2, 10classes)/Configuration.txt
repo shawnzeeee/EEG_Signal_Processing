@@ -16,8 +16,4 @@ Initial learning rate = 0.001
 Validation Freq = 10
 options = trainingOptions("adam",MaxEpochs=30,MiniBatchSize=64,InitialLearnRate=0.001, ValidationFrequency=10,plots="training-progress",Verbose=true);
 
-Training data used:
-Nick 1minBaseline trial 1-10
-Nick 1minOpenClose trial 1-10
-Shawn 1min OpenClose trial 1-5
-Daniel 
+
