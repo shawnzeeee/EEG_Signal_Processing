@@ -45,29 +45,29 @@ def extract_eeg_features(eeg_signal, fs):
     return np.array([alpha_power, beta_power, rms_val, mobility, complexity])
 
 
-
 # Define the file path again
-file_path = "EEG_Recordings/Nick/singleHandClose/trial1.bin"
+file_path = "EEG_Recordings/Nick/singleHandClose/trial5.bin"
 
 # Load the binary file and read as float32
 data_array = np.fromfile(file_path, dtype=np.float32)
 
-# Ensure data size is a multiple of 6 (each set: 4 channel readings + class + timestamp)
-trimmed_size = (data_array.size // 6) * 6
-trimmed_data = data_array[:trimmed_size]
-
 # Reshape into 6 columns: [Channel1, Channel2, Channel3, Channel4, Class, Timestamp]
-reshaped_data = trimmed_data.reshape(-1, 6)
-sTime = 300
-eTime = 2000
+reshaped_data = data_array.reshape(-1, 6)
+sTime = 1000
+eTime = 1500
 
 Xfeat1 = extract_eeg_features(reshaped_data[sTime:eTime, 1],250)
 Xfeat2 = extract_eeg_features(reshaped_data[sTime:eTime, 2],250)
 Xfeat3 = extract_eeg_features(reshaped_data[sTime:eTime, 3],250)
 Xfeat4 = extract_eeg_features(reshaped_data[sTime:eTime, 4],250)
-print(Xfeat1)
-print(Xfeat2)
-print(Xfeat3)
-print(Xfeat4)
 
 Xfeatures = np.vstack([Xfeat1, Xfeat2, Xfeat3, Xfeat4])
+
+min_feats = np.min(Xfeatures, axis=0)
+max_feats = np.max(Xfeatures, axis=0)
+
+Xfeatures_norm = (Xfeatures - min_feats) / (max_feats - min_feats + 1e-8)
+
+# Print results
+print("Normalized Features (per channel):")
+print(Xfeatures_norm)

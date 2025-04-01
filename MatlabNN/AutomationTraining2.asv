@@ -19,10 +19,10 @@ fclose(fid);
 % Reshape to 6 columns data
 channel_data = reshape(data, 6, [])';
 classIndexes = [];
+train_counter = 0;
 X_all = [];
 Y_all = [];
-
-for i = 1:size(classIndexes, 1)
+for i = 1:587
     Class = classIndexes(i,1);
     leftT = classIndexes(i,2) - 250;
     rightT = classIndexes(i,2) + 250;
@@ -45,3 +45,4 @@ end
 options = trainingOptions("adam",MaxEpochs=30,MiniBatchSize=64,InitialLearnRate=0.001, ValidationFrequency=10,plots="training-progress",Verbose=true);
 %train network
 net = trainNetwork(X_all, Y_all, layers, options);
+
