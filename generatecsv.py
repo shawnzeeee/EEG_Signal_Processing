@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from random import shuffle
 
-file_path = "EEG_Recordings/Nick/BP2"
+file_path = "EEG_Recordings/Shawn/BP2"
 
 # Initialize an empty DataFrame to store combined data
 combined_df = pd.DataFrame()
