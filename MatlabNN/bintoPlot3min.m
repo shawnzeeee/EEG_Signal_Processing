@@ -1,5 +1,6 @@
 %fid = fopen('EEG_Recordings/Daniel/3minIndexOpenClose_BP2/trial1.bin', 'r');
-fid = fopen('EEG_Recordings/Nick/3minBaseline_BP2/trial2.bin', 'r');
+%fid = fopen('EEG_Recordings/Nick/3minBaseline_BP2/trial2.bin', 'r');
+fid = fopen('EEG_Recordings/Shawn/3minOpenClose_BP2/trial1.bin', 'r');
 
 data = fread(fid, 'float32'); % Adjust format if needed
 fclose(fid);

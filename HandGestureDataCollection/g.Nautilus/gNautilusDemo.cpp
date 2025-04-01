@@ -34,9 +34,9 @@
 
 // Definition of network specific stuff.
 //-----------------------------------------------------------	--------------------------
-#define HOST_IP "142.58.221.210" // Default address is the loopback address, else the ip of the computer running GDS.
+#define HOST_IP "207.23.173.138" // Default address is the loopback address, else the ip of the computer running GDS.
 #define HOST_PORT 50223     // The default port of GDS is 50223.
-#define LOCAL_IP "207.23.208.188"// Default address is the loppback address, else the ip of the client machine.
+#define LOCAL_IP "207.23.166.205"// Default address is the loppback address, else the ip of the client machine.
 #define LOCAL_PORT 50224    // Any free port on the local machine.
 
 // Function declarations.
