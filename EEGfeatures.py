@@ -1,56 +1,73 @@
 import numpy as np
-from scipy.signal import welch
-from scipy.integrate import simps
-
-def bandpower(data, fs, band, method='welch'):
-    low, high = band
-    freqs, psd = welch(data, fs=fs)
-    # Find index of band range
-    idx_band = np.logical_and(freqs >= low, freqs <= high)
-    band_power = simps(psd[idx_band], freqs[idx_band])
-    return band_power
+from scipy.signal import welch, windows
+from scipy.stats import variation
 
 def extract_eeg_features(eeg_signal, fs):
-    eeg_signal = np.asarray(eeg_signal)
+    """
+    Extracts EEG features:
+      - Alpha power (8-13 Hz)
+      - Beta power (13-30 Hz)
+      - RMS value
+      - Hjorth mobility and complexity
 
-    # Power in Alpha and Beta Bands
-    alpha_power = bandpower(eeg_signal, fs, [8, 13])
-    beta_power = bandpower(eeg_signal, fs, [13, 30])
-    
+    Parameters:
+        eeg_signal (1D np.array): EEG signal
+        fs (float): Sampling frequency in Hz
+
+    Returns:
+        features (1D np.array): [alpha_power, beta_power, rms, mobility, complexity]
+    """
+    window = windows.hamming(256)
+    f, pxx = welch(eeg_signal, fs=fs, window=window, nperseg=256, noverlap=128, nfft=512)
+
+    # Bandpower in alpha (8-13 Hz)
+    alpha_band = (f >= 8) & (f <= 13)
+    alpha_power = np.trapz(pxx[alpha_band], f[alpha_band])
+
+    # Bandpower in beta (13-30 Hz)
+    beta_band = (f >= 13) & (f <= 30)
+    beta_power = np.trapz(pxx[beta_band], f[beta_band])
+
     # RMS
-    rms_value = np.sqrt(np.mean(eeg_signal**2))
-    
+    rms_val = np.sqrt(np.mean(eeg_signal ** 2))
+
     # Hjorth Parameters
-    diff1 = np.diff(eeg_signal)
-    diff2 = np.diff(diff1)
-    mobility = np.std(diff1) / np.std(eeg_signal)
-    complexity = np.std(diff2) / np.std(diff1)
-    
-    # Combine features into a vector
-    features = np.array([alpha_power, beta_power, rms_value, mobility, complexity])
-    return features
+    first_deriv = np.diff(eeg_signal)
+    second_deriv = np.diff(first_deriv)
+
+    var0 = np.var(eeg_signal)
+    var1 = np.var(first_deriv)
+    var2 = np.var(second_deriv)
+
+    mobility = np.sqrt(var1 / var0) if var0 != 0 else 0
+    complexity = np.sqrt((var2 / var1) - (var1 / var0)) if var1 != 0 and var0 != 0 else 0
+
+    return np.array([alpha_power, beta_power, rms_val, mobility, complexity])
 
 
 # Define the file path again
-file_path = "EEG_Recordings/Nick/gabeInterruptedMe.bin"
+file_path = "EEG_Recordings/Nick/singleHandClose/trial5.bin"
 
 # Load the binary file and read as float32
 data_array = np.fromfile(file_path, dtype=np.float32)
 
-# Ensure data size is a multiple of 6 (each set: 4 channel readings + class + timestamp)
-trimmed_size = (data_array.size // 6) * 6
-trimmed_data = data_array[:trimmed_size]
-
 # Reshape into 6 columns: [Channel1, Channel2, Channel3, Channel4, Class, Timestamp]
-reshaped_data = trimmed_data.reshape(-1, 6)
+reshaped_data = data_array.reshape(-1, 6)
+sTime = 1000
+eTime = 1500
 
-Xfeat1 = extract_eeg_features(reshaped_data[500:15000, 1],250)
-Xfeat2 = extract_eeg_features(reshaped_data[500:15000, 2],250)
-Xfeat3 = extract_eeg_features(reshaped_data[500:15000, 3],250)
-Xfeat4 = extract_eeg_features(reshaped_data[500:15000, 4],250)
-print(Xfeat1)
-print(Xfeat2)
-print(Xfeat3)
-print(Xfeat4)
+Xfeat1 = extract_eeg_features(reshaped_data[sTime:eTime, 1],250)
+Xfeat2 = extract_eeg_features(reshaped_data[sTime:eTime, 2],250)
+Xfeat3 = extract_eeg_features(reshaped_data[sTime:eTime, 3],250)
+Xfeat4 = extract_eeg_features(reshaped_data[sTime:eTime, 4],250)
 
 Xfeatures = np.vstack([Xfeat1, Xfeat2, Xfeat3, Xfeat4])
+
+min_feats = np.min(Xfeatures, axis=0)
+max_feats = np.max(Xfeatures, axis=0)
+
+Xfeatures_norm = (Xfeatures - min_feats) / (max_feats - min_feats + 1e-8)
+
+# Print results
+print("Normalized Features (per channel):")
+print(Xfeatures_norm)
