@@ -1,8 +1,11 @@
 %need to create NN beforehand here
 layers = [
     featureInputLayer(20)            % Assuming 5 EEG features per 4 channels
-    fullyConnectedLayer(32)          % First hidden layer with 16 neurons
-    reluLayer                        % Activation function
+    fullyConnectedLayer(64)
+    reluLayer
+    dropoutLayer(0.5)                   % 50% dropout
+    fullyConnectedLayer(32)
+    reluLayer
     fullyConnectedLayer(11)          % Output layer (8 individual finger open/close, 2 full hand open/close, 1 nothing/baseline)
     softmaxLayer                     % Converts outputs to probabilities
     classificationLayer              % Final classification step
@@ -42,6 +45,6 @@ for i = 1:size(classIndexes, 1)
 end
 
 %setup options for training (can alter)
-options = trainingOptions("adam",MaxEpochs=30,MiniBatchSize=32,InitialLearnRate=0.001,Shuffle="every-epoch", plots="training-progress",Verbose=true);
+options = trainingOptions("adam",MaxEpochs=60,MiniBatchSize=32,InitialLearnRate=0.01,Shuffle="every-epoch", plots="training-progress",Verbose=true);
 %train network
 net = trainNetwork(X_all, Y_all, layers, options);
