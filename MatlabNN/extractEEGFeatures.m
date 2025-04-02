@@ -47,7 +47,4 @@ function features = extractEEGFeatures(eeg_signal, fs)
     
     % Combine features into a vector
     features = [alpha_power; beta_power; rms_value; mobility; complexity];
-
-    %normalize features
-    features = (features - mean(features)) ./ (std(features) + eps);
 end

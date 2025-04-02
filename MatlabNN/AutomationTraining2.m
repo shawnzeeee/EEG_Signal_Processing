@@ -1,24 +1,15 @@
 %need to create NN beforehand here
-layers = [
-    featureInputLayer(20)            % Assuming 5 EEG features per 4 channels
-    fullyConnectedLayer(64)
-    reluLayer
-    dropoutLayer(0.5)                   % 50% dropout
-    fullyConnectedLayer(32)
-    reluLayer
-    fullyConnectedLayer(11)          % Output layer (8 individual finger open/close, 2 full hand open/close, 1 nothing/baseline)
-    softmaxLayer                     % Converts outputs to probabilities
-    classificationLayer              % Final classification step
-];
 
 %this script will train the NN from a large data file
 %using a pre shuffled timestamp vector and extracting features to train the NN
 
 %load data from file
-channel_data = readmatrix('EEG_Recordings/Nick/BP2/TrainingData/combined_data.csv');
-classIndexes= readmatrix('EEG_Recordings/Nick/BP2/TrainingData/training_data.csv');
-%channel_data = readmatrix('EEG_Recordings/Shawn/BP2/TrainingData/combined_data.csv');
-%classIndexes= readmatrix('EEG_Recordings/Shawn/BP2/TrainingData/training_data.csv');
+%channel_data = readmatrix('EEG_Recordings/Nick/BP2/TrainingData/combined_data.csv');
+%classIndexes= readmatrix('EEG_Recordings/Nick/BP2/TrainingData/training_data.csv');
+channel_data = readmatrix('EEG_Recordings/Shawn/BP2/TrainingData/combined_data.csv');
+classIndexes= readmatrix('EEG_Recordings/Shawn/BP2/TrainingData/training_data.csv');
+
+%layers = layerGraph(net); 
 
 X_all = [];
 Y_all = [];
@@ -43,8 +34,21 @@ for i = 1:size(classIndexes, 1)
         disp("training data " + i + " not used, exceeds parameters at time " + classIndexes(i,2) + " with class " + classIndexes(i,1));
     end
 end
+%normalize all data
+mu = mean(X_all, 1);             % Mean of each feature across all samples
+sigma = std(X_all, [], 1);       % Std dev of each feature
+X_all = (X_all - mu) ./ (sigma + eps);
 
 %setup options for training (can alter)
-options = trainingOptions("adam",MaxEpochs=60,MiniBatchSize=32,InitialLearnRate=0.01,Shuffle="every-epoch", plots="training-progress",Verbose=true);
-%train network
+options = trainingOptions("adam", ...
+    MaxEpochs=100, ...
+    MiniBatchSize=16, ...
+    InitialLearnRate=0.001, ...
+    LearnRateSchedule="piecewise", ...
+    LearnRateDropFactor=0.5, ...
+    LearnRateDropPeriod=10, ...
+    Shuffle="every-epoch", ...
+    Plots="training-progress", ...
+    ExecutionEnvironment="auto", ...
+    Verbose=true);
 net = trainNetwork(X_all, Y_all, layers, options);

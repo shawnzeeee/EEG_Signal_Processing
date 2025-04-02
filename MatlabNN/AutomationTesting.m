@@ -1,10 +1,10 @@
 %testing script for automation training 2 using the testing time stamps
 
 %load channel data and testing time stamps
-channel_data = readmatrix('EEG_Recordings/Nick/BP2/TrainingData/combined_data.csv');
-testIndexes= readmatrix('EEG_Recordings/Nick/BP2/TrainingData/testing_data.csv');
-%channel_data = readmatrix('EEG_Recordings/Shawn/BP2/TrainingData/combined_data.csv');
-%testIndexes= readmatrix('EEG_Recordings/Shawn/BP2/TrainingData/testing_data.csv');
+%channel_data = readmatrix('EEG_Recordings/Nick/BP2/TrainingData/combined_data.csv');
+%testIndexes= readmatrix('EEG_Recordings/Nick/BP2/TrainingData/testing_data.csv');
+channel_data = readmatrix('EEG_Recordings/Shawn/BP2/TrainingData/combined_data.csv');
+testIndexes= readmatrix('EEG_Recordings/Shawn/BP2/TrainingData/testing_data.csv');
 X_test = [];
 Y_test = [];
 
