@@ -13,22 +13,6 @@ for i = 1:numel(XTrain)
     XTrain{i} = (XTrain{i} - mu) ./ sigma;
 end
 
-% Define LSTM network
-inputSize = 20;
-numHiddenUnits = 32;
-numClasses = 11;
-dropoutRate = 0.3;
-
-layers = [ ...
-    sequenceInputLayer(inputSize)
-    lstmLayer(numHiddenUnits, 'OutputMode','last')
-    fullyConnectedLayer(32)
-    reluLayer
-    dropoutLayer(dropoutRate)
-    fullyConnectedLayer(numClasses)
-    softmaxLayer
-    classificationLayer];
-
 options = trainingOptions("adam", ...
     MaxEpochs=100, ...
     MiniBatchSize=16, ...
