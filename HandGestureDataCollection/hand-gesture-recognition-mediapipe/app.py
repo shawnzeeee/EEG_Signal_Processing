@@ -37,10 +37,10 @@ os.chdir(BASE_DIR)  # Forces script to run from `app.py` directory
 from model import KeyPointClassifier
 from model import PointHistoryClassifier
 
-model_name = "model_default"
+model_name = "model"
 
-path_keypoint = 'C:/Program Files/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/{model_name}/keypoint_classifier/keypoint_classifier_label.csv'
-path_point =  'C:/Program Files/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/{model_name}/point_history_classifier/point_history_classifier_label.csv'
+path_keypoint = 'C:/Program Files/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/{}/keypoint_classifier/keypoint_classifier_label.csv'.format(model_name)
+path_point =  'C:/Program Files/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/{}/point_history_classifier/point_history_classifier_label.csv'.format(model_name)
 
 def send_gesture_classification(gesture_code):
     """Writes an integer gesture classification (0 or 1) into shared memory."""
@@ -187,7 +187,7 @@ def main():
                 elif model_name == "model_thumb_from_open":
                     hand_gesture_map = [9,0,0,2]
                 #print(hand_sign_id_temp, hand_gesture_map[hand_sign_id_temp])
-                send_gesture_classification(hand_gesture_map[hand_sign_id_temp])
+                #send_gesture_classification(hand_gesture_map[hand_sign_id_temp])
 
                 if hand_sign_id == 2:  # Point gesture
                     point_history.append(landmark_list[8])
