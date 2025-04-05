@@ -71,7 +71,7 @@ combined_df.to_csv(combined_csv_filename, index=False, header=False)
 non_zero_rows = combined_df[combined_df["Class"] != 0]
 zero_rows = combined_df[(combined_df["Class"] == 0) & (combined_df.index >= 1) & (combined_df.index <= 90000)]
 
-selected_zero_rows = zero_rows[zero_rows.index.map(lambda x: np.random.randint(1, 2000) == 1)]
+selected_zero_rows = zero_rows[zero_rows.index.map(lambda x: np.random.randint(1, 1000) == 1)]
 
 final_dataset = pd.concat([selected_zero_rows, non_zero_rows])
 #final_dataset = selected_zero_rows
