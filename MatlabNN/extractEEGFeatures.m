@@ -5,9 +5,10 @@ function features = extractEEGFeatures(eeg_signal, fs)
     %
     % Output:
     % features - Feature vector containing extracted values
-    
+    winLength = min(64, length(eeg_signal));  % Can also try 125 if signal is 125
+
     % Power spectral density using Welch's method
-    [pxx, f] = pwelch(eeg_signal, hamming(256), 128, 512, fs);
+    [pxx, f] = pwelch(eeg_signal, hamming(winLength), floor(winLength/2), 512, fs);
 
     % Alpha power (8–13 Hz)
     alpha_power = bandpower(pxx, f, [8 13],'psd');
@@ -18,22 +19,9 @@ function features = extractEEGFeatures(eeg_signal, fs)
     %Root Mean Square (RMS)
     rms_value = rms(eeg_signal);
     
-    % Compute Hjorth parameters
-    % First and second derivatives
-    firstDeriv = diff(eeg_signal);
-    secondDeriv = diff(firstDeriv);
-
-    % Variances
-    var0 = var(eeg_signal);
-    var1 = var(firstDeriv);
-    var2 = var(secondDeriv);
-
-    % Mobility and complexity
-    mobility = sqrt(var1 / var0);
-    complexity = sqrt((var2 / var1) - (var1 / var0));
     %Hjorth Parameters
-    %mobility = std(diff(eeg_signal)) / std(eeg_signal);
-    %complexity = std(diff(diff(eeg_signal))) / std(diff(eeg_signal));
+    mobility = std(diff(eeg_signal)) / std(eeg_signal);
+    complexity = std(diff(diff(eeg_signal))) / std(diff(eeg_signal));
     
     %Zero Crossing Rate (ZCR)
     %ZCR = sum(abs(diff(sign(eeg_signal)))) / length(eeg_signal);

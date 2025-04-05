@@ -1,0 +1,17 @@
+clear;
+clc;
+
+inputSize = 20;         % 4 channels × 5 features
+numHiddenUnits = 32;
+numClasses = 11;        % for your 10 finger classes + possibly rest
+dropoutRate = 0.3;
+
+layers = [ ...
+    sequenceInputLayer(inputSize)
+    lstmLayer(numHiddenUnits, OutputMode="last")
+    fullyConnectedLayer(32)
+    reluLayer()
+    dropoutLayer(dropoutRate)
+    fullyConnectedLayer(numClasses)
+    softmaxLayer()
+    classificationLayer()];
