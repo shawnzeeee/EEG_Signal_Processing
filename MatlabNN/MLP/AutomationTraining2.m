@@ -16,8 +16,12 @@ Y_all = [];
 
 for i = 1:size(classIndexes, 1)
     classNumber = classIndexes(i,1);
-    leftT = classIndexes(i,2) - 250;
-    rightT = classIndexes(i,2) + 250;
+
+    windowSize = 125;
+    randOffset = randi([ -windowSize, windowSize]); % random index inside window
+    centerIndex = classIndexes(i,2) + randOffset;
+    leftT = centerIndex - 250;
+    rightT = centerIndex + 250;
 
     if leftT > 0 && rightT < size(channel_data, 1)
         %extract features
@@ -34,21 +38,17 @@ for i = 1:size(classIndexes, 1)
         disp("training data " + i + " not used, exceeds parameters at time " + classIndexes(i,2) + " with class " + classIndexes(i,1));
     end
 end
-%normalize all data
-mu = mean(X_all, 1);             % Mean of each feature across all samples
-sigma = std(X_all, [], 1);       % Std dev of each feature
-X_all = (X_all - mu) ./ (sigma + eps);
+
+mu = mean(X_all);
+sigma = std(X_all);
+X_all = (X_all - mu) ./ sigma;
 
 %setup options for training (can alter)
 options = trainingOptions("adam", ...
     MaxEpochs=100, ...
     MiniBatchSize=16, ...
     InitialLearnRate=0.001, ...
-    LearnRateSchedule="piecewise", ...
-    LearnRateDropFactor=0.5, ...
-    LearnRateDropPeriod=10, ...
     Shuffle="every-epoch", ...
     Plots="training-progress", ...
-    ExecutionEnvironment="auto", ...
     Verbose=true);
 net = trainNetwork(X_all, Y_all, layers, options);

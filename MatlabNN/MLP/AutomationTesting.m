@@ -5,6 +5,7 @@
 %testIndexes= readmatrix('EEG_Recordings/Nick/BP2/TrainingData/testing_data.csv');
 channel_data = readmatrix('EEG_Recordings/Shawn/BP2/TrainingData/combined_data.csv');
 testIndexes= readmatrix('EEG_Recordings/Shawn/BP2/TrainingData/testing_data.csv');
+
 X_test = [];
 Y_test = [];
 
@@ -28,6 +29,11 @@ for i = 1:size(testIndexes, 1)
         disp("testing data " + i + " not used, exceeds parameters at time " + testIndexes(i,2) + " with class " + testIndexes(i,1));
     end
 end
+
+mu = mean(X_test);
+sigma = std(X_test);
+X_test = (X_test - mu) ./ sigma;
+
 
 test_results = [];
 YPreds = predict(net, X_test);                 % All predictions at once
