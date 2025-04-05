@@ -1,4 +1,4 @@
-//COPYRIGHT © 2013 G.TEC MEDICAL ENGINEERING GMBH, AUSTRIA
+//COPYRIGHT ï¿½ 2013 G.TEC MEDICAL ENGINEERING GMBH, AUSTRIA
 #include "stdafx.h"
 #include <Windows.h>
 
@@ -505,6 +505,39 @@ int _tmain(int argc, _TCHAR* argv[])
 							//Full Close
 							if (p_gesture_code == 9 && gesture_code == 10) {
 								send_code = 10;
+							}
+							//--------------Starting from hand fully open------------
+							//Thumb Open
+							if (p_gesture_code == 2 && gesture_code == 9) {
+								send_code = 1;
+							}
+							//Thumb Close
+							if (p_gesture_code == 9 && gesture_code == 2) {
+								send_code = 2;
+							}
+							//Index Open
+							if (p_gesture_code == 4 && gesture_code == 9) {
+								send_code = 3;
+							}
+							//Index Close
+							if (p_gesture_code == 9 && gesture_code == 4) {
+								send_code = 4;
+							}
+							//Middle Open
+							if (p_gesture_code == 6 && gesture_code == 9) {
+								send_code = 5;
+							}
+							//Middle Close
+							if (p_gesture_code == 9 && gesture_code == 6) {
+								send_code = 6;
+							}
+							//Ring Pinky Open
+							if (p_gesture_code == 8 && gesture_code == 9) {
+								send_code = 7;
+							}
+							//Ring Pinky Close
+							if (p_gesture_code == 9 && gesture_code == 8) {
+								send_code = 8;
 							}
 						}
 						data_buffer[i] = static_cast<float>(send_code);

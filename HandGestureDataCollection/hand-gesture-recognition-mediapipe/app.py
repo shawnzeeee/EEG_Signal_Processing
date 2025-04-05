@@ -22,6 +22,8 @@ import struct
 SHARED_MEMORY_NAME = "Local\\GestureSharedMemory"
 SHARED_MEMORY_SIZE = 256
 
+
+
 shm = mmap.mmap(-1, SHARED_MEMORY_SIZE, SHARED_MEMORY_NAME, access=mmap.ACCESS_WRITE)
 
 import os
@@ -34,6 +36,11 @@ os.chdir(BASE_DIR)  # Forces script to run from `app.py` directory
 # Now normal imports work
 from model import KeyPointClassifier
 from model import PointHistoryClassifier
+
+model_name = "model_default"
+
+path_keypoint = 'C:/Program Files/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/{model_name}/keypoint_classifier/keypoint_classifier_label.csv'
+path_point =  'C:/Program Files/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/{model_name}/point_history_classifier/point_history_classifier_label.csv'
 
 def send_gesture_classification(gesture_code):
     """Writes an integer gesture classification (0 or 1) into shared memory."""
@@ -95,14 +102,14 @@ def main():
 
     point_history_classifier = PointHistoryClassifier()
     # Read labels ###########################################################
-    with open('C:/Program Files/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/model/keypoint_classifier/keypoint_classifier_label.csv',
+    with open(path_keypoint,
               encoding='utf-8-sig') as f:
         keypoint_classifier_labels = csv.reader(f)
         keypoint_classifier_labels = [
             row[0] for row in keypoint_classifier_labels
         ]
     with open(
-            'C:/Program Files/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/model/point_history_classifier/point_history_classifier_label.csv',
+            path_point,
             encoding='utf-8-sig') as f:
         point_history_classifier_labels = csv.reader(f)
         point_history_classifier_labels = [
@@ -169,8 +176,16 @@ def main():
                 # Send gesture classification to shared memory
                 hand_sign_id_temp = hand_sign_id
             
-
-                hand_gesture_map = [9,10,3,7,0,1,5]
+                if model_name == "model_default":
+                    hand_gesture_map = [9,10,3,7]
+                elif model_name == "model_index_from_open":
+                    hand_gesture_map = [9,0,0,4]
+                elif model_name == "model_middle_from_open":
+                    hand_gesture_map = [9,0,0,6]
+                elif model_name == "model_pinky_ring_from_open":
+                    hand_gesture_map = [9,8,0,0]
+                elif model_name == "model_thumb_from_open":
+                    hand_gesture_map = [9,0,0,2]
                 #print(hand_sign_id_temp, hand_gesture_map[hand_sign_id_temp])
                 send_gesture_classification(hand_gesture_map[hand_sign_id_temp])
 
@@ -315,12 +330,12 @@ def logging_csv(number, mode, landmark_list, point_history_list):
     if mode == 0:
         pass
     if mode == 1 and (0 <= number <= 9):
-        csv_path = 'C:/Users/shawn/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/model/keypoint_classifier/keypoint.csv'
+        csv_path = path_keypoint
         with open(csv_path, 'a', newline="") as f:
             writer = csv.writer(f)
             writer.writerow([number, *landmark_list])
     if mode == 2 and (0 <= number <= 9):
-        csv_path = 'C:/Users/shawn/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/model/point_history_classifier/point_history.csv'
+        csv_path = path_point
         with open(csv_path, 'a', newline="") as f:
             writer = csv.writer(f)
             writer.writerow([number, *point_history_list])
