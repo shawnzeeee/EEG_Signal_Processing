@@ -1,24 +1,30 @@
-function [X, Y] = extractLSTMSequences(indexSet, channel_data, Fs)
+function [X, Y] = extractLSTMSequences(indexSet, channel_data, Fs, rand)
     numFrames = 4;
     frameSize = Fs * 0.5;
-    windowSize = Fs * numFrames / 2;
     numChannels = 4;
     featuresPerChannel = 5;
-    maxJitter = 100;
+    maxJitter = 125;
 
     X = {};
     Y = [];
 
     for i = 1:size(indexSet, 1)
         classNumber = indexSet(i,1);
-        originalCenter = indexSet(i,2);
+        
+        if rand == "train"
+            originalCenter = indexSet(i,2);
+            % Add random jitter to the center index
+            jitter = randi([-maxJitter, maxJitter]);
+            centerIndex = originalCenter + jitter;
+            leftT = centerIndex - 250;
+            rightT = centerIndex + 250;
+        elseif rand == "test"
+            centerIndex = indexSet(i,2);      
+            leftT = centerIndex - 250;
+            rightT = centerIndex + 250;
+        end
 
-        % Add random jitter to the center index
-        jitter = randi([-maxJitter, maxJitter]);
-        centerIndex = originalCenter + jitter;
 
-        leftT = centerIndex - windowSize;
-        rightT = centerIndex + windowSize - 1;
 
         if leftT > 0 && rightT < size(channel_data, 1)
             sequence = zeros(numChannels * featuresPerChannel, numFrames);

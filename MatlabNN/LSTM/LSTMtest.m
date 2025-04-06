@@ -3,10 +3,7 @@ Fs = 250;
 channel_data = readmatrix('EEG_Recordings/Shawn/BP2/TrainingData/combined_data.csv');
 testIndexes = readmatrix('EEG_Recordings/Shawn/BP2/TrainingData/testing_data.csv');
 
-[XTest, YTest] = extractLSTMSequences(testIndexes, channel_data, Fs);
-
-% Load model and normalization stats
-load('trainedLSTMNet.mat', 'net', 'mu', 'sigma');
+[XTest, YTest] = extractLSTMSequences(testIndexes, channel_data, Fs, "test");
 
 % Normalize test data using training mu/sigma
 for i = 1:numel(XTest)
