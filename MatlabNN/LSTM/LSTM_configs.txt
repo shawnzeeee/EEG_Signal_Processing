@@ -5,9 +5,9 @@ inputSize = 20;
 numHiddenUnits = 32;
 numClasses = 11;        
 dropoutRate = 0.3;
-fullyConnectedLayer1 = 32
-EPOCHS = 100
-MiniBatchSize = 16
+fullyConnectedLayer1 = 32;
+EPOCHS = 100;
+MiniBatchSize = 16;
 
 %LSTM 0.0.2
 testing accuracy = 46.19%
@@ -16,9 +16,9 @@ inputSize = 20;
 numHiddenUnits = 32;
 numClasses = 11;
 dropoutRate = 0.3;
-fullyConnectedLayer1 = 16
-EPOCHS = 100
-MiniBatchSize = 16
+fullyConnectedLayer1 = 16;
+EPOCHS = 100;
+MiniBatchSize = 16;
 
 %LSTM 0.0.3
 testing accuracy = 47.72%
@@ -27,9 +27,9 @@ inputSize = 20;
 numHiddenUnits = 64;
 numClasses = 11;
 dropoutRate = 0.3;
-fullyConnectedLayer1 = 16
-EPOCHS = 100
-MiniBatchSize = 16
+fullyConnectedLayer1 = 16;
+EPOCHS = 100;
+MiniBatchSize = 16;
 
 %LSTM 0.0.4
 testing accuracy = 46.70%
@@ -38,9 +38,9 @@ inputSize = 20;
 numHiddenUnits = 64;
 numClasses = 11;
 dropoutRate = 0.5;
-fullyConnectedLayer1 = 64
-EPOCHS = 100
-MiniBatchSize = 16
+fullyConnectedLayer1 = 64;
+EPOCHS = 100;
+MiniBatchSize = 16;
 
 %LSTM 0.0.5 
 testing accuracy = 42.64%
@@ -49,9 +49,9 @@ inputSize = 20;
 numHiddenUnits = 64;
 numClasses = 11;
 dropoutRate = 0.5;
-fullyConnectedLayer1 = 16
-EPOCHS = 500
-MiniBatchSize = 16
+fullyConnectedLayer1 = 16;
+EPOCHS = 500;
+MiniBatchSize = 16;
 
 %LSTM 0.0.6
 testing accuracy = 40.10%
@@ -97,3 +97,13 @@ fullyConnectedLayer1 = 32;
 EPOCHS = 200;
 MiniBatchSize = 32;
 
+%LSTM 0.0.10
+testing accuracy = 43.65%
+
+inputSize = 20;
+numHiddenUnits = 32;
+numClasses = 11;
+dropoutRate = 0.3;
+fullyConnectedLayer1 = 32;
+EPOCHS = 500;
+MiniBatchSize = 32;

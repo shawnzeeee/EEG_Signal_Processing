@@ -1,5 +1,5 @@
 %fid = fopen('EEG_Recordings/Daniel/3minIndexOpenClose_BP2/trial1.bin', 'r');
-fid = fopen('EEG_Recordings/Nick/BP2/3minHandOpenClose/trial1.bin', 'r');
+fid = fopen('EEG_Recordings/Nick/BP2/3minHandOpenClose/data.bin', 'r');
 %fid = fopen('EEG_Recordings/Shawn/3minOpenClose_BP2/trial1.bin', 'r');
 
 data = fread(fid, 'float32'); % Adjust format if needed
@@ -13,7 +13,7 @@ timestamps = reshaped_data(:, 6);       %6th column: Timestamps
 classmarkers = reshaped_data(:, 5);     %5th col : classes
 channel_data = reshaped_data(:, 1:4);   %Next 4 columns: Channel readings
 
-sTime = 5000;
+sTime = 500;
 eTime = 45000;
 % Plot EEG data with timestamps as the x-axis
 %ch1 = C3

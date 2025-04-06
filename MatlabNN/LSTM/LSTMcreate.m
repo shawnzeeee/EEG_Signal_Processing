@@ -2,10 +2,10 @@ clear;
 
 inputSize = 20;
 numHiddenUnits = 32;
-numClasses = 11;
+numClasses = 11;        
 dropoutRate = 0.3;
 fullyConnectedLayer1 = 32;
-EPOCHS = 200;
+EPOCHS = 500;
 MiniBatchSize = 16;
 
 
@@ -24,4 +24,5 @@ options = trainingOptions("adam", ...
     MiniBatchSize=MiniBatchSize, ...
     Shuffle="every-epoch", ...
     Plots="training-progress", ...
-    Verbose=true);
+    Verbose=true, ...
+    ExecutionEnvironment="gpu");
