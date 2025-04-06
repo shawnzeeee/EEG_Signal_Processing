@@ -4,12 +4,12 @@ clc;
 inputSize = 20;         % 4 channels × 5 features
 numHiddenUnits = 64;
 numClasses = 11;        % for your 10 finger classes + possibly rest
-dropoutRate = 0.5;
+dropoutRate = 0.3;
 
 layers = [ ...
     sequenceInputLayer(inputSize)
     lstmLayer(numHiddenUnits, OutputMode="last")
-    fullyConnectedLayer(16)
+    fullyConnectedLayer(64)
     reluLayer()
     dropoutLayer(dropoutRate)
     fullyConnectedLayer(numClasses)

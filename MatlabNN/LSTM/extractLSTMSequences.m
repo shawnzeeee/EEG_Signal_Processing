@@ -4,13 +4,18 @@ function [X, Y] = extractLSTMSequences(indexSet, channel_data, Fs)
     windowSize = Fs * numFrames / 2;
     numChannels = 4;
     featuresPerChannel = 5;
+    maxJitter = 100;
 
     X = {};
     Y = [];
 
     for i = 1:size(indexSet, 1)
         classNumber = indexSet(i,1);
-        centerIndex = indexSet(i,2);
+        originalCenter = indexSet(i,2);
+
+        % Add random jitter to the center index
+        jitter = randi([-maxJitter, maxJitter]);
+        centerIndex = originalCenter + jitter;
 
         leftT = centerIndex - windowSize;
         rightT = centerIndex + windowSize - 1;
