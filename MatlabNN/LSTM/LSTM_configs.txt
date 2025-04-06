@@ -1,85 +1,99 @@
 %LSTM 0.0.1
+testing accuracy = 48.22%
 
-inputSize = 20;         % 4 channels × 5 features
+inputSize = 20;
 numHiddenUnits = 32;
-numClasses = 11;        % for your 10 finger classes + possibly rest
+numClasses = 11;        
 dropoutRate = 0.3;
-
-layers = [ ...
-    sequenceInputLayer(inputSize)
-    lstmLayer(numHiddenUnits, OutputMode="last")
-    fullyConnectedLayer(32)
-    reluLayer()
-    dropoutLayer(dropoutRate)
-    fullyConnectedLayer(numClasses)
-    softmaxLayer()
-    classificationLayer()];
+fullyConnectedLayer1 = 32
+EPOCHS = 100
+MiniBatchSize = 16
 
 %LSTM 0.0.2
+testing accuracy = 46.19%
 
-inputSize = 20;         % 4 channels × 5 features
+inputSize = 20;
 numHiddenUnits = 32;
-numClasses = 11;        % for your 10 finger classes + possibly rest
+numClasses = 11;
 dropoutRate = 0.3;
-
-layers = [ ...
-    sequenceInputLayer(inputSize)
-    lstmLayer(numHiddenUnits, OutputMode="last")
-    fullyConnectedLayer(16)
-    reluLayer()
-    dropoutLayer(dropoutRate)
-    fullyConnectedLayer(numClasses)
-    softmaxLayer()
-    classificationLayer()];
+fullyConnectedLayer1 = 16
+EPOCHS = 100
+MiniBatchSize = 16
 
 %LSTM 0.0.3
+testing accuracy = 47.72%
 
-inputSize = 20;         % 4 channels × 5 features
+inputSize = 20;
 numHiddenUnits = 64;
-numClasses = 11;        % for your 10 finger classes + possibly rest
+numClasses = 11;
 dropoutRate = 0.3;
-
-layers = [ ...
-    sequenceInputLayer(inputSize)
-    lstmLayer(numHiddenUnits, OutputMode="last")
-    fullyConnectedLayer(16)
-    reluLayer()
-    dropoutLayer(dropoutRate)
-    fullyConnectedLayer(numClasses)
-    softmaxLayer()
-    classificationLayer()];
+fullyConnectedLayer1 = 16
+EPOCHS = 100
+MiniBatchSize = 16
 
 %LSTM 0.0.4
+testing accuracy = 46.70%
 
-inputSize = 20;         % 4 channels × 5 features
+inputSize = 20;
 numHiddenUnits = 64;
-numClasses = 11;        % for your 10 finger classes + possibly rest
-dropoutRate = 0.3;
-
-layers = [ ...
-    sequenceInputLayer(inputSize)
-    lstmLayer(numHiddenUnits, OutputMode="last")
-    fullyConnectedLayer(64)
-    reluLayer()
-    dropoutLayer(dropoutRate)
-    fullyConnectedLayer(numClasses)
-    softmaxLayer()
-    classificationLayer()];
-
-
-%LSTM 0.0.5
-
-inputSize = 20;         % 4 channels × 5 features
-numHiddenUnits = 64;
-numClasses = 11;        % for your 10 finger classes + possibly rest
+numClasses = 11;
 dropoutRate = 0.5;
+fullyConnectedLayer1 = 64
+EPOCHS = 100
+MiniBatchSize = 16
 
-layers = [ ...
-    sequenceInputLayer(inputSize)
-    lstmLayer(numHiddenUnits, OutputMode="last")
-    fullyConnectedLayer(16)
-    reluLayer()
-    dropoutLayer(dropoutRate)
-    fullyConnectedLayer(numClasses)
-    softmaxLayer()
-    classificationLayer()];
+%LSTM 0.0.5 
+testing accuracy = 42.64%
+ 
+inputSize = 20;
+numHiddenUnits = 64;
+numClasses = 11;
+dropoutRate = 0.5;
+fullyConnectedLayer1 = 16
+EPOCHS = 500
+MiniBatchSize = 16
+
+%LSTM 0.0.6
+testing accuracy = 40.10%
+
+inputSize = 20;
+numHiddenUnits = 64;
+numClasses = 11;
+dropoutRate = 0.3;
+fullyConnectedLayer1 = 32;
+EPOCHS = 250;
+MiniBatchSize = 16;
+
+%LSTM 0.0.7
+testing accuracy = 48.22%
+
+inputSize = 20;
+numHiddenUnits = 32;
+numClasses = 11;
+dropoutRate = 0.3;
+fullyConnectedLayer1 = 32;
+EPOCHS = 200;
+MiniBatchSize = 16;
+
+%LSTM 0.0.8
+testing accuracy = 46.19%
+
+inputSize = 20;
+numHiddenUnits = 32;
+numClasses = 11;
+dropoutRate = 0.3;
+fullyConnectedLayer1 = 32;
+EPOCHS = 200;
+MiniBatchSize = 16;
+
+%LSTM 0.0.9
+testing accuracy = 49.24%
+
+inputSize = 20;
+numHiddenUnits = 32;
+numClasses = 11;
+dropoutRate = 0.3;
+fullyConnectedLayer1 = 32;
+EPOCHS = 200;
+MiniBatchSize = 32;
+

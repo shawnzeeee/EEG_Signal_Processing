@@ -1,17 +1,27 @@
 clear;
-clc;
 
-inputSize = 20;         % 4 channels × 5 features
-numHiddenUnits = 64;
-numClasses = 11;        % for your 10 finger classes + possibly rest
-dropoutRate = 0.5;
+inputSize = 20;
+numHiddenUnits = 32;
+numClasses = 11;
+dropoutRate = 0.3;
+fullyConnectedLayer1 = 32;
+EPOCHS = 200;
+MiniBatchSize = 16;
+
 
 layers = [ ...
     sequenceInputLayer(inputSize)
     lstmLayer(numHiddenUnits, OutputMode="last")
-    fullyConnectedLayer(16)
+    fullyConnectedLayer(fullyConnectedLayer1)
     reluLayer()
     dropoutLayer(dropoutRate)
     fullyConnectedLayer(numClasses)
     softmaxLayer()
     classificationLayer()];
+
+options = trainingOptions("adam", ...
+    MaxEpochs=EPOCHS, ...
+    MiniBatchSize=MiniBatchSize, ...
+    Shuffle="every-epoch", ...
+    Plots="training-progress", ...
+    Verbose=true);
