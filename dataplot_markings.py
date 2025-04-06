@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Define the file path again
-file_path = "EEG_Recordings/Nick/BP2/3minHandOpenClose/trial1.bin"
+file_path = "EEG_Recordings/Shawn/BP2/RingPinkyFromOpen/trial2.bin"
 
 #file_path = "EEG_Recordings/Shawn/1minOpenClose/trial5.bin"
 # file_path = "EEG_Recordings/data.bin"
