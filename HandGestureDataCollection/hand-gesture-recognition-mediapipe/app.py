@@ -33,7 +33,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 os.chdir(BASE_DIR)  # Forces script to run from `app.py` directory
 
-model_name = "model_index_from_open"  # Change this to the desired model name
+model_name = "model_default"  # Change this to the desired model name
 
 # Now normal imports work
 from model import KeyPointClassifier

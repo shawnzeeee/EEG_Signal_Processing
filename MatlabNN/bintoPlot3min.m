@@ -1,5 +1,5 @@
 %fid = fopen('EEG_Recordings/Daniel/3minIndexOpenClose_BP2/trial1.bin', 'r');
-fid = fopen('EEG_Recordings/Nick/BP2/3minHandOpenClose/data.bin', 'r');
+fid = fopen('EEG_Recordings/Nick/BP2/3minThumbOpenClose/data.bin', 'r');
 %fid = fopen('EEG_Recordings/Shawn/3minOpenClose_BP2/trial1.bin', 'r');
 
 data = fread(fid, 'float32'); % Adjust format if needed
@@ -55,7 +55,7 @@ for i = 1:4
     % Overlay non-zero class marker
     scatter(timestamps(sTime + openThumb), channel_data(sTime + openThumb, i), 20, 'yellow', 'filled', 'DisplayName', 'Non-zero Class');
     scatter(timestamps(sTime + closeThumb), channel_data(sTime + closeThumb, i), 20, 'red', 'filled', 'DisplayName', 'Non-zero Class');
-    scatter(timestamps(sTime + openIndex), channel_data(sTime + openIndex, i), 20, 'blue', 'filled', 'DisplayName', 'Non-zero Class');
+    scatter(timestamps(sTime + openIndex), channel_data(sTime + openIndex, i), 20, 'green', 'filled', 'DisplayName', 'Non-zero Class');
     scatter(timestamps(sTime + closeIndex), channel_data(sTime + closeIndex, i), 20, 'red', 'filled', 'DisplayName', 'Non-zero Class');
     scatter(timestamps(sTime + openMiddle), channel_data(sTime + openMiddle, i), 20, 'blue', 'filled', 'DisplayName', 'Non-zero Class');
     scatter(timestamps(sTime + closeMiddle), channel_data(sTime + closeMiddle, i), 20, 'red', 'filled', 'DisplayName', 'Non-zero Class');
