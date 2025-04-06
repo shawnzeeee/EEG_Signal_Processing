@@ -37,7 +37,7 @@ os.chdir(BASE_DIR)  # Forces script to run from `app.py` directory
 from model import KeyPointClassifier
 from model import PointHistoryClassifier
 
-model_name = "model_pinky_ring_from_open"
+model_name = "model_thumb_from_open"  # Change this to the desired model name
 
 path_keypoint = 'C:/Program Files/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/model/keypoint_classifier/keypoint_classifier_label.csv'.format(model_name)
 path_point =  'C:/Program Files/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/model/point_history_classifier/point_history_classifier_label.csv'.format(model_name)
@@ -185,7 +185,7 @@ def main():
                 elif model_name == "model_pinky_ring_from_open":
                     hand_gesture_map = [9,8,0,0]
                 elif model_name == "model_thumb_from_open":
-                    hand_gesture_map = [9,0,0,2]
+                    hand_gesture_map = [9,2,0,0]
                 #print(hand_sign_id_temp, hand_gesture_map[hand_sign_id_temp])
                 send_gesture_classification(hand_gesture_map[hand_sign_id_temp])
                 #print(hand_gesture_map[hand_sign_id_temp])
