@@ -2,10 +2,10 @@ clear;
 
 inputSize = 20;
 numHiddenUnits = 32;
-numClasses = 11;        
+numClasses = 11;
 dropoutRate = 0.3;
-fullyConnectedLayer1 = 16;
-EPOCHS = 30;
+fullyConnectedLayer1 = 32;
+EPOCHS = 500;
 MiniBatchSize = 16;
 InitialLearnRate=0.001;
 
@@ -27,4 +27,4 @@ options = trainingOptions("adam", ...
     Shuffle="every-epoch", ...
     Plots="training-progress", ...
     Verbose=true, ...
-    ExecutionEnvironment="gpu");
+    ExecutionEnvironment="cpu");

@@ -1,4 +1,5 @@
 function features = extractEEGFeatures(eeg_signal, fs)
+    %#codegen
     % Input:
     % eeg_signal - EEG time-series data (1D array)
     % fs - Sampling frequency (Hz)
