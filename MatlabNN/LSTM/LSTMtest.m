@@ -5,7 +5,7 @@ testIndexes = readmatrix('EEG_Signal_Processing\PythonNN\ShawnAndNickTrainingDat
 
 [XTest, YTest] = extractLSTMSequences(testIndexes, channel_data, Fs, "test");
 
-% Normalize test data using training mu/sigma
+%Normalize test data using training mu/sigma
 for i = 1:numel(XTest)
     XTest{i} = (XTest{i} - mu) ./ sigma;
 end
