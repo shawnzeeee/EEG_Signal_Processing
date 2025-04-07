@@ -72,3 +72,4 @@ class CNNBiLSTMClassifier(nn.Module):
 
 Features: Raw Data Normalized
 
+Epochs: 1000
