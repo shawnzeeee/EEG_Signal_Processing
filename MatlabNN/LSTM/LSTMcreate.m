@@ -5,7 +5,7 @@ numHiddenUnits = 32;
 numClasses = 11;        
 dropoutRate = 0.3;
 fullyConnectedLayer1 = 16   ;
-EPOCHS = 500;
+EPOCHS = 30;
 MiniBatchSize = 16;
 InitialLearnRate=0.001;
 

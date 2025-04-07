@@ -1,7 +1,7 @@
 % LSTMtrain.m
 Fs = 250;
-channel_data = readmatrix('EEG_Signal_Processing\PythonNN\ShawnAndNickTrainingData\combined_data.csv');
-trainIndexes = readmatrix('EEG_Signal_Processing\PythonNN\ShawnAndNickTrainingData\training_data.csv');
+channel_data = readmatrix('combined_data.csv');
+trainIndexes = readmatrix('training_data.csv');
 
 [XTrain, YTrain] = extractLSTMSequences(trainIndexes, channel_data, Fs, "train");
 
