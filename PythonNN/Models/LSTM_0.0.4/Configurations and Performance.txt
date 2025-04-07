@@ -1,0 +1,67 @@
+Confusion Matrix:
+ [[23  0  0  0  1  0  0  0  0  0  0]
+ [ 0  6 22  0  0  0  2  0  0  2  1]
+ [ 0  3 14  0  0  1  2  0  1  2  1]
+ [ 0  1  0  9 11  4  6  2  2  0  0]
+ [ 1  1  0  6  8  1  5  0  0  0  0]
+ [ 1  0  1  2  4  7 10  0  2  0  0]
+ [ 0  0  2  2  1  6 18  1  0  0  0]
+ [ 0  0  0  4  0  2  4 10 10  0  0]
+ [ 1  1  1  0  0  0  3 11 16  0  0]
+ [ 0  0  1  0  0  1  0  0  0 39 13]
+ [ 0  1  1  0  0  0  0  0  0 28 16]]
+
+Classification Report:
+               precision    recall  f1-score   support
+
+           0      0.885     0.958     0.920        24
+           1      0.462     0.182     0.261        33
+           2      0.333     0.583     0.424        24
+           3      0.391     0.257     0.310        35
+           4      0.320     0.364     0.340        22
+           5      0.318     0.259     0.286        27
+           6      0.360     0.600     0.450        30
+           7      0.417     0.333     0.370        30
+           8      0.516     0.485     0.500        33
+           9      0.549     0.722     0.624        54
+          10      0.516     0.348     0.416        46
+
+    accuracy                          0.464       358
+   macro avg      0.461     0.463     0.446       358
+weighted avg      0.468     0.464     0.449       358
+
+
+class EEG_LSTMClassifier(nn.Module):
+    def __init__(self, input_size=20, hidden_size=32, num_layers=2, num_classes=11, dropout=0.3):
+        super(EEG_LSTMClassifier, self).__init__()
+
+        self.lstm = nn.LSTM(
+            input_size=input_size,
+            hidden_size=hidden_size,
+            num_layers=num_layers,
+            batch_first=True,
+            dropout=dropout
+        )
+        self.bn = nn.BatchNorm1d(hidden_size)
+        
+        self.fc = nn.Sequential(
+            nn.Linear(hidden_size, 32),
+            nn.ReLU(),
+            nn.Dropout(dropout),
+            nn.Linear(32, num_classes)
+        )
+
+    def forward(self, x):
+        # x: (batch_size, time_steps, features)
+        lstm_out, _ = self.lstm(x)  # lstm_out: (batch, time_steps, hidden_size)
+        
+        # Take the output from the last time step
+        last_output = lstm_out[:, -1, :]  # shape: (batch_size, hidden_size)
+
+        normalized_output = self.bn(last_output)       # apply batch norm
+        out = self.fc(normalized_output)
+        return out
+
+
+Features: alpha, beta, mobility, rms, complexity
+
