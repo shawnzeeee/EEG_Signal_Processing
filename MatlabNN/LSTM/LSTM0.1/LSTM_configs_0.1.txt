@@ -1,0 +1,55 @@
+%LSTM 0.1.1
+testing accuracy = 53.66%
+
+inputSize = 20;
+numHiddenUnits = 32;
+numClasses = 11;        
+dropoutRate = 0.3;
+fullyConnectedLayer1 = 32;
+EPOCHS = 100;
+MiniBatchSize = 16;
+
+%LSTM 0.1.2
+testing accuracy = 61.06%
+
+inputSize = 20;
+numHiddenUnits = 32;
+numClasses = 11;        
+dropoutRate = 0.3;
+fullyConnectedLayer1 = 32;
+EPOCHS = 500;
+MiniBatchSize = 16;
+
+%LSTM 0.1.3
+testing accuracy = 58.41%
+
+inputSize = 20;
+numHiddenUnits = 32;
+numClasses = 11;        
+dropoutRate = 0.3;
+fullyConnectedLayer1 = 32;
+EPOCHS = 1000;
+MiniBatchSize = 16;
+
+%LSTM 0.1.4
+testing accuracy = 60.57%
+
+inputSize = 20;
+numHiddenUnits = 32;
+numClasses = 11;        
+dropoutRate = 0.3;
+fullyConnectedLayer1 = 32;
+EPOCHS = 200;
+MiniBatchSize = 16;
+
+%LSTM 0.1.5
+testing accuracy = 60.29%
+
+inputSize = 20;
+numHiddenUnits = 32;
+numClasses = 11;        
+dropoutRate = 0.3;
+fullyConnectedLayer1 = 32;
+EPOCHS = 100;
+MiniBatchSize = 8;
+
