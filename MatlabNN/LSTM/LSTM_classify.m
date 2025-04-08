@@ -1,5 +1,8 @@
 function out = LSTM_classify(inputWindow)
-    load('LSTM0.1.2.mat', 'net', 'mu', 'sigma'); %change this to your best trained model + normalization values    
+    %#codegen
+    %load('LSTM0.1.2.mat', 'net', 'mu', 'sigma'); %change this to your best trained model + normalization values  
+    [net, mu, sigma] = getTrainedNetwork_static();
+
     input = extractLSTMwindow(inputWindow,250);
     inputStandardized = (input - mu) ./ sigma;
     %out = predict(net, inputStandardized);      %use this if you want percentages of each class

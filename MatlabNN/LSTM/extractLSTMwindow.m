@@ -1,4 +1,5 @@
 function sequence = extractLSTMwindow(eeg_window, Fs)
+    %#codegen
     % eeg_window: [500 x 4] EEG data for a 2-second window
     % Fs: sampling frequency (e.g., 250 Hz)
 

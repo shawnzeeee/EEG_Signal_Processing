@@ -6,6 +6,7 @@ test_indexes = readmatrix('EEG_Signal_Processing\PythonNN\ShawnAndNickTrainingDa
 %generate random 2 second window from our existing data
 numSamples = size(test_indexes, 1);  % number of rows
 classNum = randi([1, numSamples]);  % random integer between 1 and num of rows
+classNum = classNum;
 disp("line randomly chosen is " + classNum);
 disp("randomly selected class is :" + test_indexes(classNum,1));
 disp("timestamp of this class is :" + test_indexes(classNum,2));
