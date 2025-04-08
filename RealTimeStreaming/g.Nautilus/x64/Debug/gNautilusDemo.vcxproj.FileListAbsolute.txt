@@ -1,0 +1,2 @@
+C:\Program Files\gtec\gNEEDaccess Client API\examples\windows\GDSClientAPIDemo\g.Nautilus\x64\Debug\gNautilusDemo.exe
+C:\Users\shawn_hx71ej8\EEG_Signal_Processing\RealTimeStreaming\g.Nautilus\x64\Debug\gNautilusDemo.exe

@@ -1,0 +1,7 @@
+﻿  stdafx.cpp
+  gNautilusDemo.cpp
+C:\Users\shawn_hx71ej8\EEG_Signal_Processing\RealTimeStreaming\g.Nautilus\gNautilusDemo.cpp(111,2): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\shawn_hx71ej8\EEG_Signal_Processing\RealTimeStreaming\g.Nautilus\gNautilusDemo.cpp(113,2): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\shawn_hx71ej8\EEG_Signal_Processing\RealTimeStreaming\g.Nautilus\gNautilusDemo.cpp(192,7): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\shawn_hx71ej8\EEG_Signal_Processing\RealTimeStreaming\g.Nautilus\gNautilusDemo.cpp(234,2): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  gNautilusDemo.vcxproj -> C:\Users\shawn_hx71ej8\EEG_Signal_Processing\RealTimeStreaming\g.Nautilus\x64\Debug\gNautilusDemo.exe
