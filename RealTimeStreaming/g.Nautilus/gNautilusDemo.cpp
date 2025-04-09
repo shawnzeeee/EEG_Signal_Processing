@@ -11,6 +11,9 @@
 #include <fstream>
 #include <algorithm>
 #include <math.h>
+#include <csignal>
+
+
 
 #include <process.h> 
 
@@ -18,6 +21,8 @@
 
 #define PYTHON_SCRIPT "\"C:\\Program Files\\Python310\\python.exe\"" 
 #define SCRIPT_PATH "\"../hand-gesture-recognition-mediapipe/app.py\""
+
+volatile bool stopBool = false;
 
 // Shared memory layout
 #define FLOAT_COUNT 2500
@@ -55,6 +60,11 @@ void on_server_died_event(GDS_HANDLE connectionHandle, void* usrData);
 //-------------------------------------------------------------------------------------
 #define SYSTEM_EVENT_TIMEOUT 5000 // [ms]
 
+void handleExit(int signum) {
+	std::cout << "\nSignal " << signum << " received. Stopping..." << std::endl;
+	stopBool = true;
+}
+
 // Shared memory setup
 HANDLE createSharedMemory() {
 	SECURITY_ATTRIBUTES sa;
@@ -90,6 +100,8 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	std::cout << "Symbionics Right Hand program begin: " << std::endl << std::endl;
 	
+	signal(SIGINT, handleExit);  // Catches Ctrl+C (SIGINT)
+
 	// Setup shared memory
 	HANDLE hMapFile = createSharedMemory();
 	if (!hMapFile) return 1;
@@ -414,7 +426,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 			}
 			//add a check here to end the infinite loop
-			if (stopBool == 1) {
+			if (stopBool) {
 				std::cout << "Ending Symbionics Program" << std::endl;
 				break;
 			}
