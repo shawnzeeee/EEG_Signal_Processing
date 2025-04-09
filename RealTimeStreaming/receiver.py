@@ -10,7 +10,8 @@ import socket
 
 
 model_path = "../PythonNN/models/CNNBiLSTM_0.0.1/model.pth"
-
+ESP_IP = "192.168.43.105"  # Replace with ESP's IP (check Serial output)
+ESP_PORT = 1234
 
 
 def reshape_data(data_array):
@@ -75,28 +76,25 @@ model.eval()
 serial_port = "COM4"  # Replace with the correct COM port for your ESP32
 baud_rate = 115200
 
-try:
-    with serial.Serial(serial_port, baud_rate, timeout=1) as ser:
-        print(f"Successfully opened {serial_port}")
-except Exception as e:
-    print(f"Error: {e}")
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+    sock.connect((ESP_IP, ESP_PORT))
+    print("Connection Established)")
+    time.sleep(1)  # Optional, in case ESP needs time after connect
 
-try:
-    with serial.Serial(serial_port, baud_rate, timeout=1) as ser:
-        print(f"Successfully opened {serial_port}")
-        
-        while True:
-            dummy_data = generate_dummy_data(num_samples)
-            reshaped_data = reshape_data(dummy_data)
+    while True:
+        # Generate and reshape input data
+        dummy_data = generate_dummy_data(num_samples)
+        reshaped_data = reshape_data(dummy_data)
 
-            input_tensor = torch.tensor(reshaped_data, dtype=torch.float32).unsqueeze(0)  # (1, 4, 500)
-            output = model(input_tensor)
-            preds = torch.argmax(output, dim=1)
-            classification = preds.item()
-            time.sleep(1)
-            ser.write(struct.pack("i", classification))  # Send as 4-byte int
-            print(f"Classification {classification} sent via UART.")
+        # Run model prediction
+        input_tensor = torch.tensor(reshaped_data, dtype=torch.float32).unsqueeze(0)  # Shape: (1, 4, 500)
+        output = model(input_tensor)
+        preds = torch.argmax(output, dim=1)
+        classification = preds.item()  # Extract integer class
 
-except Exception as e:
-    print(f"Error: {e}")
+        # Send classification as a 1-byte value (0–255)
+        sock.sendall(struct.pack("B", classification))  # Use "i" for 4-byte int if needed
+        print("Sent classification:", classification)
+
+        time.sleep(2)
 
