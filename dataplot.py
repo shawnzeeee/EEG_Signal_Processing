@@ -1,44 +1,27 @@
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# Define the file path again
-#file_path = "EEG_Recordings/Daniel/BaseRecording/trial1.bin"
-file_path = "EEG_Recordings/data.bin"
+# Filepath to the combined data CSV
+file_path = "EEG_Recordings/Shawn/BP2/FromHandOpen/combined_data.csv"
 
-# Load the binary file and read as float32
-data_array = np.fromfile(file_path, dtype=np.float32)
+# Read the combined data CSV
+columns = ["Channel 1", "Channel 2", "Channel 3", "Channel 4", "Class", "Timestamp"]
+data = pd.read_csv(file_path, header=None, names=columns)
 
-# Ensure data size is a multiple of 5 (each set: 4 channel readings + timestamp)
-trimmed_size = (data_array.size // 5) * 5
-trimmed_data = data_array[:trimmed_size]
+data = data.iloc[2000:].reset_index(drop=True)
 
-# Reshape into 5 columns: [Channel1, Channel2, Channel3, Channel4, Timestamp]
-reshaped_data = trimmed_data.reshape(-1, 6)
+# Plot each channel on a separate subplot
+fig, axes = plt.subplots(4, 1, figsize=(12, 8), sharex=True)
+channels = ["Channel 1", "Channel 2", "Channel 3", "Channel 4"]
 
-#adding in timestamp markings for classification 
-#adding new line
-# Save reshaped data to CSV file
-csv_filename = "reshaped_data.csv"
-#df = pd.DataFrame(reshaped_data, columns=["Channel 1", "Channel 2", "Channel 3", "Channel 4", "Timestamp"])
-df = pd.DataFrame(data_array)
-df.to_csv(csv_filename, index=False)
+for i, channel in enumerate(channels):
+    axes[i].plot(data["Timestamp"], data[channel], label=channel)
+    axes[i].set_ylabel(channel)
+    axes[i].legend(loc="upper right")
 
-# Extract columns
-channel_data = reshaped_data[:, :5]  # First 4 columns: EEG readings
-timestamps = reshaped_data[:, 5]  # Last column: timestamps
+# Add a common X-axis label
+axes[-1].set_xlabel("Timestamp")
 
-# Plot the EEG data with timestamps on the x-axis
-# Plot the EEG data with timestamps on the x-axis (first 1000 points)
-plt.figure(figsize=(12, 8))
-for i in range(4):  # First 4 columns are EEG channels
-    plt.subplot(4, 1, i + 1)
-    plt.plot(timestamps[500:2000], channel_data[500:2000, i])
-    plt.title(f'Channel {i+1}')
-    plt.xlabel("Timestamp")
-    plt.ylabel("Amplitude")
-    #plt.ylim([channel_data[150:, i].min() , channel_data[150:, i].max() ])  # Stretch y-axis
-
-
+# Adjust layout and show the plot
 plt.tight_layout()
 plt.show()
