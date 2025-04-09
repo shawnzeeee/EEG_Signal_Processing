@@ -1,4 +1,7 @@
-//COPYRIGHT © 2013 G.TEC MEDICAL ENGINEERING GMBH, AUSTRIA
+//Code that acquires data from EEG headset gNautilus
+//loads the data into a 2 second buffer window, and will send that data to a shared var upon request
+//Sybionics 2025
+
 #include "stdafx.h"
 #include <Windows.h>
 
@@ -20,9 +23,7 @@
 
 // Specifications for the data acquisition.
 //-------------------------------------------------------------------------------------
-#define DATA_FILE "data.bin"
 #define SAMPLE_RATE 250 // [Hz]
-#define DURATION_DAQ 20 // [s]
 #define DATA_READY_TRESHOLD_MS 30 // [ms]
 
 // Definition of network specific stuff.
@@ -82,7 +83,7 @@ HANDLE createSharedMemory() {
 //-------------------------------------------------------------------------------------
 int _tmain(int argc, _TCHAR* argv[])
 {
-	std::cout << "g.NEEDaccess: g.Nautilus Demo" << std::endl << std::endl;
+	std::cout << "Symbionics Right Hand program begin: " << std::endl << std::endl;
 	
 	// Setup shared memory
 	HANDLE hMapFile = createSharedMemory();
@@ -309,7 +310,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		std::cin.get();
 		return -1;
 	}
-
+	/*
 	// The memory for the channels per device array is allocated here (based on the first call
 	// of the method). GDS_GetDataInfo fills the array with the
 	// available number of channels for each device. This is done for demo reasons.
@@ -326,7 +327,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		std::cerr << "ERROR on 2nd GDS_GetDataInfo: " << ret.ErrorMessage << std::endl;
 		std::cin.get();
 		return -1;
-	}
+	}*/
 
 	// Command the device to acquire data.
 	//-------------------------------------------------------------------------------------
@@ -351,7 +352,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	// Prepare a buffer and acquire the measurement data. Save the data to the file.
 	//-------------------------------------------------------------------------------------
 	size_t buffer_size_in_samples = SAMPLE_RATE * buffer_size_per_scan; //250 * ?
-	uint64_t total_scans_to_acquire = DURATION_DAQ * SAMPLE_RATE;       // we don't want an end time but will set this to a long time in seconds
 	uint64_t total_acquired_scans = 0;
 	const size_t CHANNELS = 4;
 	const size_t METADATA = 1;
@@ -362,10 +362,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	try
 	{
 		float* data_buffer = new float[buffer_size_in_samples];
-		std::cout << "Buffer size in samples: " << buffer_size_in_samples << std::endl;
-		std::cout << "Start acquiring measurement data for " << DURATION_DAQ << "s." << std::endl;
 		while (true) //( total_acquired_scans < total_scans_to_acquire )
 		{
+			std::cout << "Press Ctrl + C to terminate" << std::endl << std::endl;
+
 			// wait until the server signals that the specified amount of data is available.
 			DWORD dwWaitResult = WaitForSingleObject(glb_event_handle, SYSTEM_EVENT_TIMEOUT);
 			if (dwWaitResult != WAIT_OBJECT_0)

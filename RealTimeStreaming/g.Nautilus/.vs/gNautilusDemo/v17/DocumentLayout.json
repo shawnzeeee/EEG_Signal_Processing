@@ -1,37 +1,12 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\nicho\\OneDrive\\Documents\\Spring2025\\ENSC405\\EEG_Signal_Processing\\RealTimeStreaming\\g.Nautilus\\",
-  "Documents": [
-    {
-      "AbsoluteMoniker": "D:0:0:{A27580F7-4C14-4B47-A363-6A9E18F10CB3}|gNautilusDemo.vcxproj|C:\\Users\\nicho\\OneDrive\\Documents\\Spring2025\\ENSC405\\EEG_Signal_Processing\\RealTimeStreaming\\g.Nautilus\\gNautilusDemo.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{A27580F7-4C14-4B47-A363-6A9E18F10CB3}|gNautilusDemo.vcxproj|solutionrelative:gNautilusDemo.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    }
-  ],
+  "Documents": [],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
       "VerticalTabListWidth": 256,
-      "DocumentGroups": [
-        {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "gNautilusDemo.cpp",
-              "DocumentMoniker": "C:\\Users\\nicho\\OneDrive\\Documents\\Spring2025\\ENSC405\\EEG_Signal_Processing\\RealTimeStreaming\\g.Nautilus\\gNautilusDemo.cpp",
-              "RelativeDocumentMoniker": "gNautilusDemo.cpp",
-              "ToolTip": "C:\\Users\\nicho\\OneDrive\\Documents\\Spring2025\\ENSC405\\EEG_Signal_Processing\\RealTimeStreaming\\g.Nautilus\\gNautilusDemo.cpp",
-              "RelativeToolTip": "gNautilusDemo.cpp",
-              "ViewState": "AgIAABIAAAAAAAAAAAAAABsAAAAoAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-04-09T07:05:56.447Z",
-              "EditorCaption": ""
-            }
-          ]
-        }
-      ]
+      "DocumentGroups": []
     }
   ]
 }
