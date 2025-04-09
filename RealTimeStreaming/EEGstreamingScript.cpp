@@ -18,16 +18,12 @@
 #include <GDSClientAPI_gNautilus.h>
 #include <csignal>
 
-
-#define SHARED_MEMORY_NAME L"Local\\GestureSharedMemory"  // Name of shared memory
-#define SHARED_MEMORY_SIZE 256  // Buffer size
-
 #define CONSOLE_ESCAPE_CODE_CLEAR_TO_THE_LEFT "\0"
 #define CONSOLE_ESCAPE_CODE_CARRIAGE_RETURN "\r"
 
 // Specifications for the data acquisition.
 //-------------------------------------------------------------------------------------
-#define scanWindow float[2500] //data window to send to next step
+float scanWindow[2500] = {0};  // This will hold the rolling 2s buffer
 #define SAMPLE_RATE 250 // [Hz]
 #define DURATION_DAQ 180 // [s]
 #define DATA_READY_TRESHOLD_MS 30 // [ms]
@@ -94,6 +90,8 @@ HANDLE createSharedMemory() {
 //-------------------------------------------------------------------------------------
 int _tmain()
 {
+	bool stopBool = false;
+
 	std::cout << "Symbionics right hand program start:" << std::endl << std::endl;
 
 	signal(SIGINT, handleExit);  // Handle Ctrl+C (SIGINT)
@@ -107,6 +105,9 @@ int _tmain()
 
 	// Map shared memory to the process
 	LPVOID pBuf = MapViewOfFile(hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, SHARED_MEMORY_SIZE);
+	bool* requestData = reinterpret_cast<bool*>(pBuf);
+	float* inputWindow = reinterpret_cast<float*>((char*)pBuf + sizeof(bool));
+
 	if (!pBuf) {
 		std::cerr << "Could not map view of file." << std::endl;
 		CloseHandle(hMapFile);
@@ -431,9 +432,12 @@ int _tmain()
                 }
 
                 //check for flag from shawn here, to transfer this data to the NN classification
-                if (requestData == 1){
-                    inputWindow = scanWindow;
-                }
+                if (*requestData == true) {
+					std::memcpy(inputWindow, scanWindow, TOTAL_SAMPLES * sizeof(float));
+					FlushViewOfFile(inputWindow, TOTAL_SAMPLES * sizeof(float));
+					*requestData = false;
+				}
+				
 			}
             //add a check here to end the infinite loop
             if (stopBool == 1){
@@ -448,7 +452,6 @@ int _tmain()
 		CloseHandle(hMapFile);
 		delete[] data_buffer;
 		data_buffer = NULL;
-		file.close();
 	}
 	catch(const std::logic_error & exc)
 	{
