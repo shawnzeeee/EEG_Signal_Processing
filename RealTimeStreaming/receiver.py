@@ -13,6 +13,10 @@ model_path = "../PythonNN/models/CNNBiLSTM_0.0.1/model.pth"
 ESP_IP = "192.168.43.105"  # Replace with ESP's IP (check Serial output)
 ESP_PORT = 1234
 
+REQUEST_DATA = "Local\\RequestData"
+READY_DATA = "Local\\ReadyData"
+INPUT_WINDOW = "Local\\InputWindow"
+
 
 def reshape_data(data_array):
     """
@@ -86,14 +90,31 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
         dummy_data = generate_dummy_data(num_samples)
         reshaped_data = reshape_data(dummy_data)
 
-        # Run model prediction
-        input_tensor = torch.tensor(reshaped_data, dtype=torch.float32).unsqueeze(0)  # Shape: (1, 4, 500)
-        output = model(input_tensor)
-        preds = torch.argmax(output, dim=1)
-        classification = preds.item()  # Extract integer class
+        with mmap.mmap(-1, 4, READY_DATA, access=mmap.ACCESS_READ) as ready_shm:
+            ready_flag = struct.unpack("i", ready_shm.read(4))[0]  # Read READY_DATA as an integer
+
+        if ready_flag == 1:  # Check if READY_DATA is set to true
+            # Open shared memory for INPUT_WINDOW
+            with mmap.mmap(-1, 2500 * 32, INPUT_WINDOW, access=mmap.ACCESS_READ) as input_shm:
+                input_data = np.frombuffer(input_shm, dtype=np.float32)  # Read INPUT_WINDOW data
+                reshaped_data = reshape_data(input_data)  # Reshape the data
+
+                # Run model prediction
+                input_tensor = torch.tensor(reshaped_data, dtype=torch.float32).unsqueeze(0)  # Shape: (1, 4, 500)
+                output = model(input_tensor)
+                preds = torch.argmax(output, dim=1)
+                classification = preds.item()  # Extract integer class
+
+            with mmap.mmap(-1, 4, READY_DATA, access=mmap.ACCESS_READ) as ready_shm:
+                ready_shm.write(struct.pack("i", 1))  # Write 1 to REQUEST_DATA
 
         # Send classification as a 1-byte value (0–255)
         sock.sendall(struct.pack("B", classification))  # Use "i" for 4-byte int if needed
+
+        # Set REQUEST_DATA flag to 1
+        with mmap.mmap(-1, 4, REQUEST_DATA, access=mmap.ACCESS_WRITE) as request_shm:
+            request_shm.write(struct.pack("i", 1))  # Write 1 to REQUEST_DATA
+
         print("Sent classification:", classification)
 
         time.sleep(2)
