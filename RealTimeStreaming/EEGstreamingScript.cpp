@@ -18,6 +18,12 @@
 #include <GDSClientAPI_gNautilus.h>
 #include <csignal>
 
+#define SHARED_MEMORY_NAME L"Local\\GestureSharedMemory"  // Name of shared memory
+#define SHARED_MEMORY_SIZE 256  // Buffer size
+
+#define PYTHON_SCRIPT "\"C:\\Program Files\\Python310\\python.exe\"" 
+#define SCRIPT_PATH "\"../hand-gesture-recognition-mediapipe/app.py\""
+
 #define CONSOLE_ESCAPE_CODE_CLEAR_TO_THE_LEFT "\0"
 #define CONSOLE_ESCAPE_CODE_CARRIAGE_RETURN "\r"
 
@@ -49,6 +55,44 @@ void on_server_died_event(GDS_HANDLE connectionHandle, void* usrData);
 #define SYSTEM_EVENT_TIMEOUT 5000 // [ms]
 HANDLE glb_event_handle;
 
+// Python Hand Gesture Script
+//-------------------------------------------------------------------------------------
+PROCESS_INFORMATION pi;
+
+std::wstring stringToWString(const std::string& str) {
+	return std::wstring(str.begin(), str.end());
+}
+
+
+void startPythonScript() {
+	//std::string command = std::string(PYTHON_SCRIPT) + " " + SCRIPT_PATH;
+	STARTUPINFO si = { sizeof(si) };
+
+	std::string command = std::string("python ") + SCRIPT_PATH;
+	// Convert to wide string (LPWSTR)
+	std::wstring wcommand = stringToWString(command);
+	LPWSTR lpwCommand = &wcommand[0];
+
+	if (!CreateProcessW(NULL, lpwCommand, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
+		std::cerr << "Failed to start Python script!" << std::endl;
+	}
+	else {
+		std::cout << "Python script started successfully.\n";
+	}
+}
+
+void stopPythonScript() {
+	std::cout << "Stopping Python script...\n";
+	TerminateProcess(pi.hProcess, 0);
+	CloseHandle(pi.hProcess);
+	CloseHandle(pi.hThread);
+}
+
+void handleExit(int signum) {
+	stopPythonScript();
+
+	exit(signum);
+}
 HANDLE createSharedMemory() {
 	SECURITY_ATTRIBUTES sa;
 	PSECURITY_DESCRIPTOR pSD = (PSECURITY_DESCRIPTOR)LocalAlloc(LPTR, SECURITY_DESCRIPTOR_MIN_LENGTH);

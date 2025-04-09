@@ -1,0 +1,2 @@
+C:\Users\nicho\OneDrive\Documents\Spring2025\ENSC405\gNEEDaccess Client API\gNEEDaccess Client API\examples\windows\GDSClientAPIDemo\g.Nautilus\x64\Debug\gNautilusDemo.exe
+C:\Users\nicho\OneDrive\Documents\Spring2025\ENSC405\EEG_Signal_Processing\RealTimeStreaming\g.Nautilus\x64\Debug\gNautilusDemo.exe
