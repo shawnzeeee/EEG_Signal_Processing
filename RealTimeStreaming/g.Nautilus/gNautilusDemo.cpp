@@ -22,8 +22,6 @@
 #define PYTHON_SCRIPT "\"C:\\Program Files\\Python310\\python.exe\"" 
 #define SCRIPT_PATH "\"../hand-gesture-recognition-mediapipe/app.py\""
 
-volatile bool stopBool = false;
-
 // Shared memory layout
 #define FLOAT_COUNT 2500
 #define SHARED_MEMORY_SIZE (sizeof(bool) + sizeof(float) * FLOAT_COUNT)
