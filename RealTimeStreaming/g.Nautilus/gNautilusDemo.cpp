@@ -13,14 +13,12 @@
 #include <math.h>
 #include <csignal>
 
-
-
 #include <process.h> 
 
 #include <GDSClientAPI_gNautilus.h>
 
 #define PYTHON_SCRIPT "\"C:\\Program Files\\Python310\\python.exe\"" 
-#define SCRIPT_PATH "\"../hand-gesture-recognition-mediapipe/app.py\""
+#define SCRIPT_PATH "\"../receiver.py""
 
 // Shared memory layout
 #define FLOAT_COUNT 2500
@@ -36,9 +34,9 @@
 
 // Definition of network specific stuff.
 //-------------------------------------------------------------------------------------
-#define HOST_IP "207.23.181.48" // Default address is the loopback address, else the ip of the computer running GDS.
+#define HOST_IP "207.23.217.234" // Default address is the loopback address, else the ip of the computer running GDS.
 #define HOST_PORT 50223     // The default port of GDS is 50223.
-#define LOCAL_IP "192.75.240.247"// Default address is the loppback address, else the ip of the client machine.
+#define LOCAL_IP "207.23.168.88"// Default address is the loppback address, else the ip of the client machine.
 #define LOCAL_PORT 50224    // Any free port on the local machine.
 
 HANDLE glb_event_handle;
@@ -98,7 +96,6 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	std::cout << "Symbionics Right Hand program begin: " << std::endl << std::endl;
 	
-	signal(SIGINT, handleExit);  // Catches Ctrl+C (SIGINT)
 
 	// Setup shared memory
 	HANDLE hMapFile = createSharedMemory();
@@ -111,9 +108,10 @@ int _tmain(int argc, _TCHAR* argv[])
 		CloseHandle(hMapFile);
 		return 1;
 	}
-	bool* requestData = reinterpret_cast<bool*>(pBuf);
-	float* inputWindow = reinterpret_cast<float*>((char*)pBuf + sizeof(bool));
+	bool* RequestData = reinterpret_cast<bool*>(pBuf);
+	bool* ReadyData = reinterpret_cast<bool*>(pBuf);
 
+	float* InputWindow = reinterpret_cast<float*>((char*)pBuf + sizeof(bool));
 
 	// Create the event which is triggerd when data should be processed.
 	//-------------------------------------------------------------------------------------
@@ -325,7 +323,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		std::cin.get();
 		return -1;
 	}
-	/*
+	
 	// The memory for the channels per device array is allocated here (based on the first call
 	// of the method). GDS_GetDataInfo fills the array with the
 	// available number of channels for each device. This is done for demo reasons.
@@ -342,7 +340,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		std::cerr << "ERROR on 2nd GDS_GetDataInfo: " << ret.ErrorMessage << std::endl;
 		std::cin.get();
 		return -1;
-	}*/
+	}
 
 	// Command the device to acquire data.
 	//-------------------------------------------------------------------------------------
@@ -366,7 +364,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	// Prepare a buffer and acquire the measurement data. Save the data to the file.
 	//-------------------------------------------------------------------------------------
-	size_t buffer_size_in_samples = SAMPLE_RATE * buffer_size_per_scan; //250 * ?
+	size_t buffer_size_in_samples = SAMPLE_RATE * buffer_size_per_scan;
 	uint64_t total_acquired_scans = 0;
 	const size_t CHANNELS = 4;
 	const size_t METADATA = 1;
@@ -376,52 +374,65 @@ int _tmain(int argc, _TCHAR* argv[])
 	
 	// Launch the Python script from C++
 	_spawnlp(_P_NOWAIT, "python", "python", "receiver.py", NULL);
+	std::cout << "Python NN classifier script started" << std::endl << std::endl;
 
 	try
 	{
 		float* data_buffer = new float[buffer_size_in_samples];
+
+		std::cout << "Press Ctrl + C to terminate" << std::endl << std::endl;
+
 		while (true) //( total_acquired_scans < total_scans_to_acquire )
 		{
-			std::cout << "Press Ctrl + C to terminate" << std::endl << std::endl;
-
+			std::cout << "Window to disconnect" << std::endl;
+			Sleep(2000);
+			
 			// wait until the server signals that the specified amount of data is available.
 			DWORD dwWaitResult = WaitForSingleObject(glb_event_handle, SYSTEM_EVENT_TIMEOUT);
-			if (dwWaitResult != WAIT_OBJECT_0)
+			if (dwWaitResult != WAIT_OBJECT_0){
 				throw std::logic_error("Error: The data ready event hasn't been triggered within a reasonable time.");
-
-			size_t scans_available = 0;
+			}
+			size_t timestamps_available = 0;
 			//retrieve scans available from GDS server
-			ret = GDS_GetData(connectionHandle, &scans_available, data_buffer, buffer_size_in_samples);
+			ret = GDS_GetData(connectionHandle, &timestamps_available, data_buffer, buffer_size_in_samples);
 			if (ret.ErrorCode)
 			{
 				std::cerr << "ERROR on GDS_GetData: " << ret.ErrorMessage << std::endl;
 				break;
 			}
-
-			if (scans_available > 0)
+			if (timestamps_available > 0) //if # of timestamps of data > 0
 			{
 				//amount of samples we can copy into window right now
-				size_t samples_to_copy = scans_available * VALUES_PER_SCAN; //5 values per scan
+				size_t timestamps_to_copy = timestamps_available * VALUES_PER_SCAN; //5 values per scan
 
 				//if the amount of samples is bigger than 2500, then we just copy the most recent 2500 samples
-				if (samples_to_copy >= TOTAL_SAMPLES) {
-					std::memcpy(scanWindow, data_buffer + (samples_to_copy - TOTAL_SAMPLES), TOTAL_SAMPLES * sizeof(float));
+				if (timestamps_to_copy >= TOTAL_SAMPLES) {
+					std::cout << "Copying data_buffer to the scanWindow v1" << std::endl << std::endl;
+					std::memcpy(scanWindow, data_buffer + (timestamps_to_copy - TOTAL_SAMPLES), TOTAL_SAMPLES * sizeof(float));
 				}
 				//if the amount of samples is less than 2500, we just input the data, shifting the old data out
 				else {
+					std::cout << "Shifting old data and copying data_buffer to the scanWindow v2" << std::endl << std::endl;
+
 					// Shift old data left
-					std::memmove(scanWindow, scanWindow + samples_to_copy, (TOTAL_SAMPLES - samples_to_copy) * sizeof(float));
+					std::memmove(scanWindow, scanWindow + timestamps_to_copy, (TOTAL_SAMPLES - timestamps_to_copy) * sizeof(float));
 					// Copy new data to the end
-					std::memcpy(scanWindow + (TOTAL_SAMPLES - samples_to_copy), data_buffer, samples_to_copy * sizeof(float));
+					std::memcpy(scanWindow + (TOTAL_SAMPLES - timestamps_to_copy), data_buffer, timestamps_to_copy * sizeof(float));
 				}
-
 				//check for flag from shawn here, to transfer this data to the NN classification
-				if (*requestData == true) {
-					std::memcpy(inputWindow, scanWindow, TOTAL_SAMPLES * sizeof(float));
-					FlushViewOfFile(inputWindow, TOTAL_SAMPLES * sizeof(float));
-					*requestData = false;
-				}
+				if (*RequestData == true) {
+					std::cout << "Copying scanWindow data to the shared inputWindow" << std::endl << std::endl;
 
+					//copy scanWindow to shared InputWindow
+					std::memcpy(InputWindow, scanWindow, TOTAL_SAMPLES * sizeof(float));
+					FlushViewOfFile(InputWindow, TOTAL_SAMPLES * sizeof(float));
+					*RequestData = false;
+					
+					//set ReadyData to true, so python knows to read the InputWindow
+					std::cout << "Setting ReadyData to true, python can read data now" << std::endl;
+
+					*ReadyData = true;
+				}
 			}
 			//add a check here to end the infinite loop
 			if (stopBool) {
