@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from random import shuffle
 
-file_path = "EEG_Recordings/Shawn/BP2/FromHandOpen"
+file_path = "EEG_Recordings/ReducedModel"
 
 # Initialize an empty DataFrame to store combined data
 combined_df = pd.DataFrame()
@@ -81,7 +81,7 @@ combined_df.to_csv(combined_csv_filename, index=False, header=False)
 
 # Extract non-zero classification rows without resetting the index
 non_zero_rows = combined_df[combined_df["Class"] != 0]
-zero_rows = combined_df[(combined_df["Class"] == 0) & (combined_df.index >= 1) & (combined_df.index <= 135000)]
+zero_rows = combined_df[(combined_df["Class"] == 0) & (combined_df.index >= 1) & (combined_df.index <= 100000)]
 
 selected_zero_rows = zero_rows[zero_rows.index.map(lambda x: np.random.randint(1, 1000) == 1)]
 
@@ -95,6 +95,9 @@ shuffled_rows = final_dataset.sample(frac=1, random_state=42)
 # Create a new DataFrame with the original index and classification columns
 shuffled_df = shuffled_rows[["Class"]].copy()
 shuffled_df["index"] = shuffled_rows.index
+
+#ONLY HAVE THIS LINE FOR REDUCED MODEL
+shuffled_df["Class"] = shuffled_df["Class"].replace({9: 3, 10: 4})
 
 # Split into 80% training and 20% testing
 train_size = int(len(shuffled_df) * 0.8)

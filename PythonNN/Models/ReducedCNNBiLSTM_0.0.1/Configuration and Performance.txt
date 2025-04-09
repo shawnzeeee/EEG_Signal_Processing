@@ -1,0 +1,59 @@
+class ReducedCNNBiLSTMClassifier(nn.Module):
+    def __init__(self, num_classes=5):
+        super(ReducedCNNBiLSTMClassifier, self).__init__()
+
+        self.cnn = nn.Sequential(
+            nn.Conv1d(4, 32, kernel_size=5, padding=2),
+            nn.BatchNorm1d(32),
+            nn.ReLU(),
+            nn.MaxPool1d(2),
+            nn.Conv1d(32, 64, kernel_size=5, padding=2),
+            nn.BatchNorm1d(64),
+            nn.ReLU(),
+            nn.MaxPool1d(2)
+        )
+
+        self.lstm = nn.LSTM(input_size=64, hidden_size=32, batch_first=True, bidirectional=True)
+        
+        self.bn = nn.BatchNorm1d(32 * 2)  # Match hidden size
+        
+        self.classifier = nn.Sequential(
+            nn.Linear(32 * 2, 32),
+            nn.ReLU(),
+            nn.Dropout(0.3),
+            nn.Linear(32, num_classes)
+        )
+
+    def forward(self, x):
+        x = self.cnn(x)  # → (B, 64, T)
+        x = x.permute(0, 2, 1)  # (B, T, 64)
+
+        _, (hn, _) = self.lstm(x)  # hn: (2, B, 32) if bidirectional=True
+        hn = torch.cat((hn[0], hn[1]), dim=1)  # (B, 64)
+
+        hn = self.bn(hn)  # BatchNorm on full concatenated hidden state
+        return self.classifier(hn)
+
+500 Epochs:
+
+Confusion Matrix:
+ [[22  0  0  0  0]
+ [ 0 23 26  0  1]
+ [ 0 15 33  0  1]
+ [ 0  1  0 29  6]
+ [ 0  0  1  8 28]]
+
+Classification Report:
+               precision    recall  f1-score   support
+
+           0      1.000     1.000     1.000        22
+           1      0.590     0.460     0.517        50
+           2      0.550     0.673     0.606        49
+           3      0.784     0.806     0.795        36
+           4      0.778     0.757     0.767        37
+
+    accuracy                          0.696       194
+   macro avg      0.740     0.739     0.737       194
+weighted avg      0.698     0.696     0.693       194
+
+1000 Epochs:
