@@ -5,6 +5,8 @@ import torch
 import time
 from CNNBiLSTM import CNNBiLSTMClassifier
 import serial
+import socket
+
 
 
 model_path = "../PythonNN/models/CNNBiLSTM_0.0.1/model.pth"
@@ -91,7 +93,7 @@ try:
             output = model(input_tensor)
             preds = torch.argmax(output, dim=1)
             classification = preds.item()
-            time.sleep(2)
+            time.sleep(1)
             ser.write(struct.pack("i", classification))  # Send as 4-byte int
             print(f"Classification {classification} sent via UART.")
 
