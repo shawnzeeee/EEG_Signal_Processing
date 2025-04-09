@@ -12,7 +12,12 @@
 #include <algorithm>
 #include <math.h>
 
+#include <process.h> 
+
 #include <GDSClientAPI_gNautilus.h>
+
+#define PYTHON_SCRIPT "\"C:\\Program Files\\Python310\\python.exe\"" 
+#define SCRIPT_PATH "\"../hand-gesture-recognition-mediapipe/app.py\""
 
 // Shared memory layout
 #define FLOAT_COUNT 2500
@@ -358,6 +363,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	const size_t VALUES_PER_SCAN = CHANNELS + METADATA;  // = 5
 	const size_t SCANS_PER_WINDOW = 250 * 2;             // = 500 total
 	const size_t TOTAL_SAMPLES = SCANS_PER_WINDOW * VALUES_PER_SCAN;  // = 2500
+	
+	// Launch the Python script from C++
+	_spawnlp(_P_NOWAIT, "python", "python", "receiver.py", NULL);
 
 	try
 	{
