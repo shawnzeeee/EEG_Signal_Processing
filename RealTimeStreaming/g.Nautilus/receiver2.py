@@ -5,11 +5,12 @@ import torch
 import time
 from CNNBiLSTM import CNNBiLSTMClassifier
 from ReducedCNNBiLSTM import ReducedCNNBiLSTMClassifier
+from ReducedCNNLSTM import ReducedCNNLSTMClassifier
 import serial
 import socket
 
 #model_path = "model.pth"
-model_path = "ReducedCNNBiLSTM.pth"
+model_path = "ReducedCNNLSTM.pth"
 ESP_IP = "207.23.171.115"  # Replace with ESP's IP (check Serial output)
 ESP_PORT = 1234
 
@@ -76,7 +77,7 @@ num_samples = 500  # Number of samples (500 timestamps + 500 * 4 channels)
 
 
 #model = CNNBiLSTMClassifier(num_classes=11)  # Adjust `num_classes` as needed
-model = ReducedCNNBiLSTMClassifier(num_classes=5)  # Adjust `num_classes` as needed
+model = ReducedCNNLSTMClassifier(num_classes=5)  # Adjust `num_classes` as needed
 
 model.load_state_dict(torch.load(model_path, map_location="cpu"))
 model.eval()
