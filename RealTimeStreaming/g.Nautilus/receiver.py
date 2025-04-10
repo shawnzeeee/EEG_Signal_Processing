@@ -7,8 +7,6 @@ from CNNBiLSTM import CNNBiLSTMClassifier
 import serial
 import socket
 
-
-
 model_path = "model.pth"
 ESP_IP = "192.168.35.59"  # Replace with ESP's IP (check Serial output)
 ESP_PORT = 1234
@@ -16,7 +14,6 @@ ESP_PORT = 1234
 REQUEST_DATA = "Local\\RequestData"
 READY_DATA = "Local\\ReadyData"
 INPUT_WINDOW = "Local\\InputWindow"
-
 
 def reshape_data(data_array):
     """
@@ -32,7 +29,7 @@ def reshape_data(data_array):
     reshaped_raw = trimmed_data.reshape(500, 5)  # 5 columns: Timestamp, Ch1, Ch2, Ch3, Ch4
 
     # Extract only the channel data (Ch1, Ch2, Ch3, Ch4) and transpose to shape (4, 500)
-    channel_data = reshaped_raw[:, 1:5].T  # Transpose to get (4, 500)
+    channel_data = reshaped_raw[:, 0:5].T  # Transpose to get (4, 500)
 
     return channel_data
 
@@ -66,11 +63,8 @@ def generate_dummy_data(num_samples):
     data = np.column_stack((timestamps, ch1, ch2, ch3, ch4)).flatten()
     return data
 
-
-
 # Example usage
 num_samples = 500  # Number of samples (500 timestamps + 500 * 4 channels)
-
 
 model = CNNBiLSTMClassifier(num_classes=11)  # Adjust `num_classes` as needed
 model.load_state_dict(torch.load(model_path, map_location="cpu"))
@@ -80,49 +74,51 @@ model.eval()
 serial_port = "COM4"  # Replace with the correct COM port for your ESP32
 baud_rate = 115200
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-    sock.connect((ESP_IP, ESP_PORT))
-    print("Connection Established)")
-    time.sleep(1)  # Optional, in case ESP needs time after connect
+#with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+    #print("connecting to server")
+    #sock.connect((ESP_IP, ESP_PORT))
+    #print("Connection Established")    
+    #time.sleep(1)  # Optional, in case ESP needs time after connect
 
-    classification = 0
+classification = 0
 
-    while True:
-        try:
-            with mmap.mmap(-1, 4, READY_DATA, access=mmap.ACCESS_READ) as ready_shm:
-                ready_flag = struct.unpack("i", ready_shm.read(4))[0]  # Read READY_DATA as an integer
+while True:
+    try:
+        time.sleep(0.5)
+        with mmap.mmap(-1, 4, READY_DATA, access=mmap.ACCESS_READ) as ready_shm:
+            ready_flag = struct.unpack("i", ready_shm.read(4))[0]  # Read READY_DATA as an integer
 
-            if ready_flag == 1:  # Check if READY_DATA is set to true
-                print("PYTHON: ready_flag = 1, reading data for NN")
-                # Open shared memory for INPUT_WINDOW
-                with mmap.mmap(-1, 2500 * 4, INPUT_WINDOW, access=mmap.ACCESS_READ) as input_shm:
-                    input_shm.seek(0)
-                    input_data = np.frombuffer(input_shm, dtype=np.float32).copy()
-                    reshaped_data = reshape_data(input_data)  # Reshape the data
-                    
-                    # Run model prediction
-                    input_tensor = torch.tensor(reshaped_data, dtype=torch.float32).unsqueeze(0)  # Shape: (1, 4, 500)
-                    output = model(input_tensor)
-                    preds = torch.argmax(output, dim=1)
-                    classification = preds.item()  # Extract integer class
+        if ready_flag == 1:  # Check if READY_DATA is set to true
+            # Open shared memory for INPUT_WINDOW
+            with mmap.mmap(-1, 2500 * 4, INPUT_WINDOW, access=mmap.ACCESS_READ) as input_shm:
+                input_shm.seek(0)
+                input_data = np.frombuffer(input_shm, dtype=np.float32).copy()
+                reshaped_data = reshape_data(input_data)  # Reshape the data
+                print(reshaped_data)
 
-                    print("Sent classification:", classification)
-                
-                with mmap.mmap(-1, 4, READY_DATA, access=mmap.ACCESS_WRITE) as ready_shm:
-                    ready_shm.seek(0)
-                    ready_shm.write(struct.pack("i", 1))  # Write 1 to REQUEST_DATA
+                # Run model prediction
+                #input_tensor = torch.tensor(reshaped_data, dtype=torch.float32).unsqueeze(0)  # Shape: (1, 4, 500)
+                #output = model(input_tensor)
+                #preds = torch.argmax(output, dim=1)
+                #classification = preds.item()  # Extract integer class
 
-            # Send classification as a 1-byte value (0–255)
-            sock.sendall(struct.pack("B", classification))  # Use "i" for 4-byte int if needed
+                #print("Sent classification:", classification)
+            
+            with mmap.mmap(-1, 4, READY_DATA, access=mmap.ACCESS_WRITE) as ready_shm:
+                ready_shm.seek(0)
+                ready_shm.write(struct.pack("i", 0))  # Write 0 to READY_DATA
 
-            # Set REQUEST_DATA flag to 1
-            with mmap.mmap(-1, 4, REQUEST_DATA, access=mmap.ACCESS_WRITE) as request_shm:
-                request_shm.seek(0)
-                request_shm.write(struct.pack("i", 1))  # Write 1 to REQUEST_DATA
+        # Send classification as a 1-byte value (0–255)
+        #sock.sendall(struct.pack("B", classification))  # Use "i" for 4-byte int if needed
 
-        except Exception as e:
-            print(f"Error occurred: {e}")
-            # Set REQUEST_DATA flag to 2 to indicate an error
-            with mmap.mmap(-1, 4, REQUEST_DATA, access=mmap.ACCESS_WRITE) as request_shm:
-                request_shm.seek(0)
-                request_shm.write(struct.pack("i", 2))  # Write 2 to REQUEST_DATA
+        # Set REQUEST_DATA flag to 1
+        with mmap.mmap(-1, 4, REQUEST_DATA, access=mmap.ACCESS_WRITE) as request_shm:
+            request_shm.seek(0)
+            request_shm.write(struct.pack("i", 1))  # Write 1 to REQUEST_DATA
+
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        # Set REQUEST_DATA flag to 2 to indicate an error
+        with mmap.mmap(-1, 4, REQUEST_DATA, access=mmap.ACCESS_WRITE) as request_shm:
+            request_shm.seek(0)
+            request_shm.write(struct.pack("i", 2))  # Write 2 to REQUEST_DATA

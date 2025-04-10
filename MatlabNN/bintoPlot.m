@@ -1,4 +1,5 @@
-fid = fopen('EEG_Recordings/Daniel/FullHandOpen/trial2.bin', 'r');
+%fid = fopen('EEG_Recordings/Daniel/FullHandOpen/trial2.bin', 'r');
+fid = fopen('MatlabNN/window.bin', 'r');
 data = fread(fid, 'float32'); % Adjust format if needed
 fclose(fid);
 
@@ -7,7 +8,7 @@ reshaped_data = reshape(data, 5, [])'; % Transpose so each row is a time step
 
 % Extract timestamp and channel readings
 timestamps = reshaped_data(:, 5);       %6th column: Timestamps
-channel_data = reshaped_data(:, 1:4);   %Next 4 columns: Channel readings
+channel_data = reshaped_data(:, 0:4);   %Next 4 columns: Channel readings
 
 sTime = 500;
 eTime = 2504;
