@@ -17,8 +17,9 @@
 
 #include <GDSClientAPI_gNautilus.h>
 
-#define PYTHON_SCRIPT "\"C:\\Program Files\\Python310\\python.exe\"" 
-#define SCRIPT_PATH "\"../receiver.py""
+#define PYTHON_SCRIPT "\"C:\\Program Files\\Python310\\python.exe\""
+#define SCRIPT_PATH "\"receiver.py\""
+
 
 // Shared memory layout
 #define FLOAT_COUNT 2500
@@ -61,32 +62,40 @@ void handleExit(int signum) {
 	stopBool = true;
 }
 
-// Shared memory setup
-HANDLE createSharedMemory() {
+struct SharedMemoryHandles {
+	HANDLE requestData;
+	HANDLE readyData;
+	HANDLE inputWindow;
+};
+
+SharedMemoryHandles createSharedMemory() {
 	SECURITY_ATTRIBUTES sa;
 	PSECURITY_DESCRIPTOR pSD = (PSECURITY_DESCRIPTOR)LocalAlloc(LPTR, SECURITY_DESCRIPTOR_MIN_LENGTH);
 
 	if (!pSD || !InitializeSecurityDescriptor(pSD, SECURITY_DESCRIPTOR_REVISION)) {
 		std::cerr << "Failed to setup security descriptor!" << std::endl;
 		LocalFree(pSD);
-		return NULL;
+		return {};
 	}
 
 	if (!SetSecurityDescriptorDacl(pSD, TRUE, NULL, FALSE)) {
 		std::cerr << "Failed to set DACL!" << std::endl;
 		LocalFree(pSD);
-		return NULL;
+		return {};
 	}
 
 	sa.nLength = sizeof(SECURITY_ATTRIBUTES);
 	sa.lpSecurityDescriptor = pSD;
 	sa.bInheritHandle = FALSE;
 
-	std::wstring name = L"Local\\GestureSharedMemory";
-	HANDLE hMapFile = CreateFileMappingW(INVALID_HANDLE_VALUE, &sa, PAGE_READWRITE, 0, SHARED_MEMORY_SIZE, name.c_str());
+	SharedMemoryHandles handles;
+
+	handles.requestData = CreateFileMappingW(INVALID_HANDLE_VALUE, &sa, PAGE_READWRITE, 0, 4, L"Local\\RequestData");
+	handles.readyData = CreateFileMappingW(INVALID_HANDLE_VALUE, &sa, PAGE_READWRITE, 0, 4, L"Local\\ReadyData");
+	handles.inputWindow = CreateFileMappingW(INVALID_HANDLE_VALUE, &sa, PAGE_READWRITE, 0, SHARED_MEMORY_SIZE, L"Local\\InputWindow");
 
 	LocalFree(pSD);
-	return hMapFile;
+	return handles;
 }
 
 //-------------------------------------------------------------------------------------
@@ -98,20 +107,37 @@ int _tmain(int argc, _TCHAR* argv[])
 	
 
 	// Setup shared memory
-	HANDLE hMapFile = createSharedMemory();
-	if (!hMapFile) return 1;
+	SharedMemoryHandles hMapFile = createSharedMemory();
+	HANDLE hRequestData = hMapFile.requestData;
+	HANDLE hReadyData = hMapFile.readyData;
+	HANDLE hInputWindow = hMapFile.inputWindow;
+
+	if (!hReadyData) return 1;
+	if (!hRequestData) return 1;
+	if (!hInputWindow) return 1;
 
 	// Map memory to local pointers
-	LPVOID pBuf = MapViewOfFile(hMapFile, FILE_MAP_ALL_ACCESS, 0, 0, SHARED_MEMORY_SIZE);
-	if (!pBuf) {
-		std::cerr << "Could not map view of file." << std::endl;
-		CloseHandle(hMapFile);
+	LPVOID pBuf1 = MapViewOfFile(hRequestData, FILE_MAP_ALL_ACCESS, 0, 0, 4);
+	if (!pBuf1) {
+		std::cerr << "Could not map view of file 1." << std::endl;
+		CloseHandle(hRequestData);
 		return 1;
 	}
-	bool* RequestData = reinterpret_cast<bool*>(pBuf);
-	bool* ReadyData = reinterpret_cast<bool*>(pBuf);
-
-	float* InputWindow = reinterpret_cast<float*>((char*)pBuf + sizeof(bool));
+	LPVOID pBuf2 = MapViewOfFile(hReadyData, FILE_MAP_ALL_ACCESS, 0, 0, 4);
+	if (!pBuf2) {
+		std::cerr << "Could not map view of file 2." << std::endl;
+		CloseHandle(hReadyData);
+		return 1;
+	}
+	LPVOID pBuf3 = MapViewOfFile(hInputWindow, FILE_MAP_ALL_ACCESS, 0, 0, SHARED_MEMORY_SIZE);
+	if (!pBuf3) {
+		std::cerr << "Could not map view of file 3." << std::endl;
+		CloseHandle(hInputWindow);
+		return 1;
+	}
+	int* RequestData = reinterpret_cast<int*>(pBuf1);
+	int* ReadyData = reinterpret_cast<int*>(pBuf2);
+	float* InputWindow = reinterpret_cast<float*>((char*)pBuf3 + sizeof(bool));
 
 	// Create the event which is triggerd when data should be processed.
 	//-------------------------------------------------------------------------------------
@@ -287,8 +313,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	// Write the retrieved config to the console.
 	//-------------------------------------------------------------------------------------
 	GDS_GNAUTILUS_CONFIGURATION* cfg_received_nautilus = (GDS_GNAUTILUS_CONFIGURATION*)(cfg_received[0].Configuration);
-	std::cout << "Config of " << device_list[0] << ": " << std::endl;
-	show_config( cfg_received_nautilus );
+	//std::cout << "Config of " << device_list[0] << ": " << std::endl;
+	//show_config( cfg_received_nautilus );
 
 	// Set the data ready callback treshold.
 	//-------------------------------------------------------------------------------------
@@ -380,11 +406,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		float* data_buffer = new float[buffer_size_in_samples];
 
-		std::cout << "Press Ctrl + C to terminate" << std::endl << std::endl;
-
 		while (true) //( total_acquired_scans < total_scans_to_acquire )
 		{
-			std::cout << "Window to disconnect" << std::endl;
 			Sleep(2000);
 			
 			// wait until the server signals that the specified amount of data is available.
@@ -420,18 +443,21 @@ int _tmain(int argc, _TCHAR* argv[])
 					std::memcpy(scanWindow + (TOTAL_SAMPLES - timestamps_to_copy), data_buffer, timestamps_to_copy * sizeof(float));
 				}
 				//check for flag from shawn here, to transfer this data to the NN classification
-				if (*RequestData == true) {
+				std::cout << "Checking RequestData value..." << std::endl;
+				std::cout << *RequestData << std::endl;
+
+				if (*RequestData == 1) {
 					std::cout << "Copying scanWindow data to the shared inputWindow" << std::endl << std::endl;
 
 					//copy scanWindow to shared InputWindow
 					std::memcpy(InputWindow, scanWindow, TOTAL_SAMPLES * sizeof(float));
 					FlushViewOfFile(InputWindow, TOTAL_SAMPLES * sizeof(float));
-					*RequestData = false;
+					*RequestData = 0;
 					
 					//set ReadyData to true, so python knows to read the InputWindow
 					std::cout << "Setting ReadyData to true, python can read data now" << std::endl;
 
-					*ReadyData = true;
+					*ReadyData = 1;
 				}
 			}
 			//add a check here to end the infinite loop
@@ -444,7 +470,9 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		// Free the buffer and close the file.
 		//-------------------------------------------------------------------------------------
-		CloseHandle(hMapFile);
+		CloseHandle(hReadyData);
+		CloseHandle(hRequestData);
+		CloseHandle(hInputWindow);
 		delete[] data_buffer;
 		data_buffer = NULL;
 	}
