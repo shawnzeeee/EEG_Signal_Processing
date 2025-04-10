@@ -33,7 +33,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 os.chdir(BASE_DIR)  # Forces script to run from `app.py` directory
 
-model_name = "model_default"  # Change this to the desired model name
+model_name = "model_thumb_from_open"  # Change this to the desired model name
 
 # Now normal imports work
 from model import KeyPointClassifier
@@ -42,8 +42,10 @@ from model import PointHistoryClassifier
 
 # path_keypoint = 'C:/Program Files/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/model/keypoint_classifier/keypoint_classifier_label.csv'.format(model_name)
 # path_point =  'C:/Program Files/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/model/point_history_classifier/point_history_classifier_label.csv'.format(model_name)
-path_keypoint = 'C:/Users/nicho/OneDrive/Documents/ASFU/7Spring2025/ENSC405/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/model/keypoint_classifier/keypoint_classifier_label.csv'.format(model_name)
-path_point = 'C:/Users/nicho/OneDrive/Documents/ASFU/7Spring2025/ENSC405/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/model/point_history_classifier/point_history_classifier_label.csv'.format(model_name)
+#path_keypoint = 'C:/Users/nicho/OneDrive/Documents/ASFU/7Spring2025/ENSC405/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/model/keypoint_classifier/keypoint_classifier_label.csv'.format(model_name)
+#path_point = 'C:/Users/nicho/OneDrive/Documents/ASFU/7Spring2025/ENSC405/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/model/point_history_classifier/point_history_classifier_label.csv'.format(model_name)
+path_keypoint = 'C:/Users/nicho/OneDrive/Documents/Spring2025/ENSC405/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/model/keypoint_classifier/keypoint_classifier_label.csv'.format(model_name)
+path_point = 'C:/Users/nicho/OneDrive/Documents/Spring2025/ENSC405/EEG_Signal_Processing/HandGestureDataCollection/hand-gesture-recognition-mediapipe/model/point_history_classifier/point_history_classifier_label.csv'.format(model_name)
 
 def send_gesture_classification(gesture_code):
     """Writes an integer gesture classification (0 or 1) into shared memory."""
