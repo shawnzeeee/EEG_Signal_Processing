@@ -88,41 +88,41 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
     classification = 0
 
     while True:
-        # Generate and reshape input data
-        # dummy_data = generate_dummy_data(num_samples)
-        # reshaped_data = reshape_data(dummy_data)
+        try:
+            with mmap.mmap(-1, 4, READY_DATA, access=mmap.ACCESS_READ) as ready_shm:
+                ready_flag = struct.unpack("i", ready_shm.read(4))[0]  # Read READY_DATA as an integer
 
-        with mmap.mmap(-1, 4, READY_DATA, access=mmap.ACCESS_READ) as ready_shm:
-            ready_flag = struct.unpack("i", ready_shm.read(4))[0]  # Read READY_DATA as an integer
+            if ready_flag == 1:  # Check if READY_DATA is set to true
+                print("PYTHON: ready_flag = 1, reading data for NN")
+                # Open shared memory for INPUT_WINDOW
+                with mmap.mmap(-1, 2500 * 4, INPUT_WINDOW, access=mmap.ACCESS_READ) as input_shm:
+                    input_shm.seek(0)
+                    input_data = np.frombuffer(input_shm, dtype=np.float32).copy()
+                    reshaped_data = reshape_data(input_data)  # Reshape the data
+                    
+                    # Run model prediction
+                    input_tensor = torch.tensor(reshaped_data, dtype=torch.float32).unsqueeze(0)  # Shape: (1, 4, 500)
+                    output = model(input_tensor)
+                    preds = torch.argmax(output, dim=1)
+                    classification = preds.item()  # Extract integer class
 
-        if ready_flag == 1:  # Check if READY_DATA is set to true
-            print("PYTHON: ready_flag = 1, reading data for NN")
-            # Open shared memory for INPUT_WINDOW
-            with mmap.mmap(-1, 2500 * 4, INPUT_WINDOW, access=mmap.ACCESS_READ) as input_shm:
-                input_shm.seek(0)
-                #input_data = np.frombuffer(input_shm, dtype=np.float32)  # Read INPUT_WINDOW data
-                input_data = np.frombuffer(input_shm, dtype=np.float32).copy()
-                reshaped_data = reshape_data(input_data)  # Reshape the data
+                    print("Sent classification:", classification)
                 
-                # Run model prediction
-                input_tensor = torch.tensor(reshaped_data, dtype=torch.float32).unsqueeze(0)  # Shape: (1, 4, 500)
-                output = model(input_tensor)
-                preds = torch.argmax(output, dim=1)
-                classification = preds.item()  # Extract integer class
+                with mmap.mmap(-1, 4, READY_DATA, access=mmap.ACCESS_WRITE) as ready_shm:
+                    ready_shm.seek(0)
+                    ready_shm.write(struct.pack("i", 1))  # Write 1 to REQUEST_DATA
 
-                print("Sent classification:", classification)
-            
-            with mmap.mmap(-1, 4, READY_DATA, access=mmap.ACCESS_WRITE) as ready_shm:
-                ready_shm.seek(0)
-                ready_shm.write(struct.pack("i", 1))  # Write 1 to REQUEST_DATA
+            # Send classification as a 1-byte value (0–255)
+            sock.sendall(struct.pack("B", classification))  # Use "i" for 4-byte int if needed
 
-        # Send classification as a 1-byte value (0–255)
-        sock.sendall(struct.pack("B", classification))  # Use "i" for 4-byte int if needed
+            # Set REQUEST_DATA flag to 1
+            with mmap.mmap(-1, 4, REQUEST_DATA, access=mmap.ACCESS_WRITE) as request_shm:
+                request_shm.seek(0)
+                request_shm.write(struct.pack("i", 1))  # Write 1 to REQUEST_DATA
 
-        # Set REQUEST_DATA flag to 1
-        with mmap.mmap(-1, 4, REQUEST_DATA, access=mmap.ACCESS_WRITE) as request_shm:
-            request_shm.seek(0)
-            request_shm.write(struct.pack("i", 1))  # Write 1 to REQUEST_DATA
-        
-        #time.sleep(0)    
-
+        except Exception as e:
+            print(f"Error occurred: {e}")
+            # Set REQUEST_DATA flag to 2 to indicate an error
+            with mmap.mmap(-1, 4, REQUEST_DATA, access=mmap.ACCESS_WRITE) as request_shm:
+                request_shm.seek(0)
+                request_shm.write(struct.pack("i", 2))  # Write 2 to REQUEST_DATA
