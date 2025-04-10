@@ -100,9 +100,8 @@ while True:
             input_shm.seek(0)
             #input_data = np.frombuffer(input_shm, dtype=np.float32)  # Read INPUT_WINDOW data
             input_data = np.frombuffer(input_shm, dtype=np.float32).copy()
-            
             reshaped_data = reshape_data(input_data)  # Reshape the data
-            print(input_data.shape, reshaped_data.shape)
+            
             # Run model prediction
             input_tensor = torch.tensor(reshaped_data, dtype=torch.float32).unsqueeze(0)  # Shape: (1, 4, 500)
             output = model(input_tensor)
@@ -123,5 +122,5 @@ while True:
         request_shm.seek(0)
         request_shm.write(struct.pack("i", 1))  # Write 1 to REQUEST_DATA
     
-    time.sleep(2)    
+    time.sleep(1)    
 

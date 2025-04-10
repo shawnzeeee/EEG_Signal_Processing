@@ -408,7 +408,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		while (true) //( total_acquired_scans < total_scans_to_acquire )
 		{
-			Sleep(2000);
+			Sleep(1);
 			
 			// wait until the server signals that the specified amount of data is available.
 			DWORD dwWaitResult = WaitForSingleObject(glb_event_handle, SYSTEM_EVENT_TIMEOUT);
