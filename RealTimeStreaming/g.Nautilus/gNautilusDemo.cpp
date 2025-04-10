@@ -424,7 +424,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		//std::ofstream file2("twosecond.bin", std::ios_base::binary);
 		while (true)//( total_acquired_scans < total_scans_to_acquire )
 		{
-			Sleep(500);
+			Sleep(1);
 			//std::cout << "buffer size per scan: " << buffer_size_per_scan << std::endl;
 			
 			// wait until the server signals that the specified amount of data is available.
@@ -467,16 +467,15 @@ int _tmain(int argc, _TCHAR* argv[])
 					// Append to streamBuffer circularly, or overwrite entirely each time
 					//std::memcpy(streamBuffer, data_buffer, timestamps_to_copy * sizeof(float));
 					
-					std::cout << "saving window to .bin file" << std::endl;
 					// Inside the loop — just write
 					file.seekp(0);  // Go back to beginning
 					file.write((const char*)scanWindow, TOTAL_SAMPLES * sizeof(float));
 					file.flush();   // Make sure it's written immediately
 
 					//copy scanWindow to shared InputWindow
-					std::memcpy(InputWindow, (const char*)scanWindow, TOTAL_SAMPLES * sizeof(float));
-					FlushViewOfFile(InputWindow, TOTAL_SAMPLES * sizeof(float));
-					*RequestData = 0;
+					//std::memcpy(InputWindow, (const char*)scanWindow, TOTAL_SAMPLES * sizeof(float));
+					//FlushViewOfFile(InputWindow, TOTAL_SAMPLES * sizeof(float));
+					//*RequestData = 0;
 					
 					//set ReadyData to true, so python knows to read the InputWindow
 					//std::cout << "Setting ReadyData to true, python can read data now" << std::endl;
@@ -594,7 +593,7 @@ void setup_config( GDS_GNAUTILUS_CONFIGURATION* config, unsigned int sampling_ra
 			config->Channels[j].Enabled = FALSE;
 	
 		config->Channels[j].Sensitivity = 187500.0;
-		config->Channels[j].BandpassFilterIndex = 21;
+		config->Channels[j].BandpassFilterIndex = 16;
 		config->Channels[j].NotchFilterIndex = 1;
 		config->Channels[j].BipolarChannel = -1;	
 		config->Channels[j].UsedForNoiseReduction = FALSE;
