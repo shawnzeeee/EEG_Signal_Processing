@@ -96,11 +96,13 @@ while True:
     if ready_flag == 1:  # Check if READY_DATA is set to true
         print("PYTHON: ready_flag = 1, reading data for NN")
         # Open shared memory for INPUT_WINDOW
-        with mmap.mmap(-1, 2500 * 32, INPUT_WINDOW, access=mmap.ACCESS_READ) as input_shm:
+        with mmap.mmap(-1, 2500 * 4, INPUT_WINDOW, access=mmap.ACCESS_READ) as input_shm:
             input_shm.seek(0)
-            input_data = np.frombuffer(input_shm, dtype=np.float32)  # Read INPUT_WINDOW data
+            #input_data = np.frombuffer(input_shm, dtype=np.float32)  # Read INPUT_WINDOW data
+            input_data = np.frombuffer(input_shm, dtype=np.float32).copy()
+            
             reshaped_data = reshape_data(input_data)  # Reshape the data
-
+            print(input_data.shape, reshaped_data.shape)
             # Run model prediction
             input_tensor = torch.tensor(reshaped_data, dtype=torch.float32).unsqueeze(0)  # Shape: (1, 4, 500)
             output = model(input_tensor)
@@ -109,7 +111,7 @@ while True:
 
             print("Sent classification:", classification)
         
-        with mmap.mmap(-1, 4, READY_DATA, access=mmap.ACCESS_READ) as ready_shm:
+        with mmap.mmap(-1, 4, READY_DATA, access=mmap.ACCESS_WRITE) as ready_shm:
             ready_shm.seek(0)
             ready_shm.write(struct.pack("i", 1))  # Write 1 to REQUEST_DATA
 
@@ -118,15 +120,8 @@ while True:
 
     # Set REQUEST_DATA flag to 1
     with mmap.mmap(-1, 4, REQUEST_DATA, access=mmap.ACCESS_WRITE) as request_shm:
-        print("PYTHON: Setting REQUEST_DATA to 1")
         request_shm.seek(0)
         request_shm.write(struct.pack("i", 1))  # Write 1 to REQUEST_DATA
     
-    with mmap.mmap(-1, 4, REQUEST_DATA, access=mmap.ACCESS_READ) as request_flag:
-        request_flag.seek(0)
-        request_flag = struct.unpack("i", request_flag.read(4))[0]  # Read REQUEST_DATA as an integer
-        print("PYTHON: Printing REQUEST_FLAG")
-        print(request_flag)
-
     time.sleep(2)    
 

@@ -23,7 +23,7 @@
 
 // Shared memory layout
 #define FLOAT_COUNT 2500
-#define SHARED_MEMORY_SIZE (sizeof(bool) + sizeof(float) * FLOAT_COUNT)
+#define SHARED_MEMORY_SIZE (sizeof(float) * FLOAT_COUNT)
 
 #define CONSOLE_ESCAPE_CODE_CLEAR_TO_THE_LEFT "\0"
 #define CONSOLE_ESCAPE_CODE_CARRIAGE_RETURN "\r"
@@ -428,7 +428,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				//amount of samples we can copy into window right now
 				size_t timestamps_to_copy = timestamps_available * VALUES_PER_SCAN; //5 values per scan
 
-				//if the amount of samples is bigger than 2500, then we just copy the most recent 2500 samples
+				//if the amount of time stamps is bigger than 2500, then we just copy the most recent 2500 samples
 				if (timestamps_to_copy >= TOTAL_SAMPLES) {
 					std::cout << "Copying data_buffer to the scanWindow v1" << std::endl << std::endl;
 					std::memcpy(scanWindow, data_buffer + (timestamps_to_copy - TOTAL_SAMPLES), TOTAL_SAMPLES * sizeof(float));
