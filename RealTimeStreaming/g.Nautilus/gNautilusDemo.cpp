@@ -35,9 +35,9 @@
 
 // Definition of network specific stuff.
 //-------------------------------------------------------------------------------------
-#define HOST_IP "207.23.217.234" // Default address is the loopback address, else the ip of the computer running GDS.
+#define HOST_IP "192.168.35.86" // Default address is the loopback address, else the ip of the computer running GDS.
 #define HOST_PORT 50223     // The default port of GDS is 50223.
-#define LOCAL_IP "207.23.168.88"// Default address is the loppback address, else the ip of the client machine.
+#define LOCAL_IP "192.168.35.248"// Default address is the loppback address, else the ip of the client machine.
 #define LOCAL_PORT 50224    // Any free port on the local machine.
 
 HANDLE glb_event_handle;
@@ -408,7 +408,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		while (true) //( total_acquired_scans < total_scans_to_acquire )
 		{
-			Sleep(1);
+			//Sleep(0);
 			
 			// wait until the server signals that the specified amount of data is available.
 			DWORD dwWaitResult = WaitForSingleObject(glb_event_handle, SYSTEM_EVENT_TIMEOUT);
@@ -430,12 +430,12 @@ int _tmain(int argc, _TCHAR* argv[])
 
 				//if the amount of time stamps is bigger than 2500, then we just copy the most recent 2500 samples
 				if (timestamps_to_copy >= TOTAL_SAMPLES) {
-					std::cout << "Copying data_buffer to the scanWindow v1" << std::endl << std::endl;
+					//std::cout << "Copying data_buffer to the scanWindow v1" << std::endl << std::endl;
 					std::memcpy(scanWindow, data_buffer + (timestamps_to_copy - TOTAL_SAMPLES), TOTAL_SAMPLES * sizeof(float));
 				}
 				//if the amount of samples is less than 2500, we just input the data, shifting the old data out
 				else {
-					std::cout << "Shifting old data and copying data_buffer to the scanWindow v2" << std::endl << std::endl;
+					//std::cout << "Shifting old data and copying data_buffer to the scanWindow v2" << std::endl << std::endl;
 
 					// Shift old data left
 					std::memmove(scanWindow, scanWindow + timestamps_to_copy, (TOTAL_SAMPLES - timestamps_to_copy) * sizeof(float));
@@ -443,8 +443,8 @@ int _tmain(int argc, _TCHAR* argv[])
 					std::memcpy(scanWindow + (TOTAL_SAMPLES - timestamps_to_copy), data_buffer, timestamps_to_copy * sizeof(float));
 				}
 				//check for flag from shawn here, to transfer this data to the NN classification
-				std::cout << "Checking RequestData value..." << std::endl;
-				std::cout << *RequestData << std::endl;
+				//std::cout << "Checking RequestData value..." << std::endl;
+				//std::cout << *RequestData << std::endl;
 
 				if (*RequestData == 1) {
 					std::cout << "Copying scanWindow data to the shared inputWindow" << std::endl << std::endl;
@@ -458,6 +458,11 @@ int _tmain(int argc, _TCHAR* argv[])
 					std::cout << "Setting ReadyData to true, python can read data now" << std::endl;
 
 					*ReadyData = 1;
+				}
+				//error handling
+				else if (*RequestData == 2) {
+					std::cout << "Error happened in PYTHON, terminating program" << std::endl;
+					stopBool = true;
 				}
 			}
 			//add a check here to end the infinite loop
