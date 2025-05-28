@@ -1,6 +1,6 @@
 # A BCI Glove
 
-By Shawn Xie, Nicolas Hung, Timothy Cheung, Gabriel Mansal and Jim Pimentel
+By Shawn Xie, Nicholas Hung, Timothy Cheung, Gabriel Mansal, Daniel Kim, and Jim Pimentel
 
 ## Overview
 
