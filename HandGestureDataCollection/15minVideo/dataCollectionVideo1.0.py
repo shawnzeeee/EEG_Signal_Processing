@@ -93,7 +93,7 @@ def show_break(duration):
         frame = 255 * np.ones((400, 600, 3), dtype=np.uint8)
         cv2.putText(frame, 'Break Time', (120, 200), cv2.FONT_HERSHEY_SIMPLEX,
                     1.5, (0, 0, 255), 4)
-        cv2.imshow("Break", frame)
+        cv2.imshow("Display", frame)
         if cv2.waitKey(1000) & 0xFF == ord('q'):
             exit(0)
 
@@ -104,11 +104,7 @@ cycle_count = 0
 while time.time() - session_start < total_duration:
     # Alternate open-close videos for 2 minutes
     play_open_close_alternating(cycle_duration, open_close_pairs)
-    cycle_count += 1
-
-    # Break after every 2 open-close blocks
-    if cycle_count % 2 == 0:
-        print("[BREAK] Taking a 2-minute break...")
-        show_break(break_duration)
+    print("[BREAK] Taking a 2-minute break...")
+    show_break(break_duration)
 
 print("=== Session Complete ===")
