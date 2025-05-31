@@ -2,28 +2,23 @@ import cv2
 import time
 import random
 import numpy as np
+import os
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # --- CONFIG ---
 open_close_pairs = { 
-        "15minVideo/GestureVideos/index_close.mp4":"15minVideo/GestureVideos/index_open.mp4", 
-        "15minVideo/GestureVideos/middle_close.mp4":"15minVideo/GestureVideos/middle_open.mp4", 
-        "15minVideo/GestureVideos/pinky_ring_close.mp4":"15minVideo/GestureVideos/pinky_ring_open.mp4", 
-        "15minVideo/GestureVideos/1thumb_close.mp4":"15minVideo/GestureVideos/1thumb_open.mp4", 
+         os.path.join(script_dir,"GestureVideos/index_close.mp4")       : os.path.join(script_dir,"GestureVideos/index_open.mp4"), 
+         os.path.join(script_dir,"GestureVideos/middle_close.mp4")      : os.path.join(script_dir,"GestureVideos/middle_open.mp4"), 
+         os.path.join(script_dir,"GestureVideos/pinky_ring_close.mp4")  : os.path.join(script_dir,"GestureVideos/pinky_ring_open.mp4"), 
+         os.path.join(script_dir,"GestureVideos/1thumb_close.mp4")      : os.path.join(script_dir,"GestureVideos/1thumb_open.mp4"), 
 }
+
 cycle_duration = 2 * 60   # 2 minutes per video session
 break_duration = 2 * 60   # 2-minute break
 total_duration = 15 * 60  # total session time
 
 # --- HELPER FUNCTIONS ---
-def show_countdown():
-    for i in [3, 2, 1]:
-        frame = 255 * np.ones((400, 400, 3), dtype=np.uint8)
-        cv2.putText(frame, f"{i}", (160, 220), cv2.FONT_HERSHEY_SIMPLEX,
-                    4, (0, 0, 255), 8)
-        cv2.imshow("Countdown", frame)
-        if cv2.waitKey(1000) & 0xFF == ord('q'):
-            exit(0)
-
 def play_video_then_countdown(path):
     cap = cv2.VideoCapture(path)
     if not cap.isOpened():
@@ -54,7 +49,7 @@ def play_video_then_countdown(path):
     y = int(h / 2) + 20     # Vertically centered
 
     # --- Show 3..2..1 countdown on the last frame ---
-    for i in [3, 2, 1]:
+    for i in [3, 2, 1, "GO"]:
         overlay = last_frame.copy()
         cv2.putText(overlay, str(i), (x, y), cv2.FONT_HERSHEY_SIMPLEX,
                     3, (0, 0, 255), 6)
@@ -77,10 +72,11 @@ def play_open_close_alternating(duration, pairs):
 
         print(f"[OPEN] Playing: {open_vid}")
         play_video_then_countdown(open_vid)
-
+        
         if time.time() - start_time >= duration:
             break
 
+        time.sleep(3)
         print(f"[CLOSE] Playing: {close_vid}")
         play_video_then_countdown(close_vid)
 
@@ -90,13 +86,23 @@ def play_open_close_alternating(duration, pairs):
 def show_break(duration):
     start = time.time()
     while time.time() - start < duration:
+        remaining = int(duration - (time.time() - start))
+
         frame = 255 * np.ones((400, 600, 3), dtype=np.uint8)
-        cv2.putText(frame, 'Break Time', (120, 200), cv2.FONT_HERSHEY_SIMPLEX,
+        
+        # Draw "Break Time"
+        cv2.putText(frame, 'Break Time', (120, 150), cv2.FONT_HERSHEY_SIMPLEX,
                     1.5, (0, 0, 255), 4)
+
+        # Draw countdown timer
+        countdown_text = f"Resumes in: {remaining} s"
+        cv2.putText(frame, countdown_text, (100, 250), cv2.FONT_HERSHEY_SIMPLEX,
+                    1, (0, 0, 0), 2)
+
         cv2.imshow("Display", frame)
         if cv2.waitKey(1000) & 0xFF == ord('q'):
             exit(0)
-
+        
 # --- MAIN LOOP ---
 session_start = time.time()
 cycle_count = 0
