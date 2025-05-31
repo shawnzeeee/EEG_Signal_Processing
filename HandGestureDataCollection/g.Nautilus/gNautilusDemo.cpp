@@ -18,10 +18,10 @@
 
 #define PYTHON_SCRIPT "\"C:\\Program Files\\Python310\\python.exe\"" 
 #define SCRIPT_PATH "\"../hand-gesture-recognition-mediapipe/app.py\""
+//#define SCRIPT_PATH "\"../15minVideo/dataCollectionVideo1.0.py\""
 
 #define SHARED_MEMORY_NAME L"Local\\GestureSharedMemory"  // Name of shared memory
 #define SHARED_MEMORY_SIZE 256  // Buffer size
-
 
 #define CONSOLE_ESCAPE_CODE_CLEAR_TO_THE_LEFT "\0"
 #define CONSOLE_ESCAPE_CODE_CARRIAGE_RETURN "\r"

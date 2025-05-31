@@ -3,8 +3,22 @@ import time
 import random
 import numpy as np
 import os
+import mmap
+import struct
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
+
+SHARED_MEMORY_NAME = "Local\\GestureSharedMemory"
+SHARED_MEMORY_SIZE = 256
+shm = mmap.mmap(-1, SHARED_MEMORY_SIZE, SHARED_MEMORY_NAME, access=mmap.ACCESS_WRITE)
+
+#classifications of hand gestures:
+#Hand close     = 0
+#Hand open      = 1
+#Ok close       = 2
+#Ok open        = 3
+#Prong close    = 4
+#Prong open     = 5
 
 # --- CONFIG ---
 video_list = [ 
@@ -21,7 +35,12 @@ break_duration = 2 * 60   # 2-minute break
 total_duration = 15 * 60  # total session time
 
 # --- HELPER FUNCTIONS ---
-def play_video_then_countdown(path):
+def send_gesture_classification(gesture_code):
+    """Writes an integer gesture classification (0 to 5) into shared memory."""
+    shm.seek(0)
+    shm.write(struct.pack('i', gesture_code))
+
+def play_video_then_countdown(path, gesture_index):
     cap = cv2.VideoCapture(path)
     if not cap.isOpened():
         print(f"Cannot open: {path}")
@@ -38,9 +57,11 @@ def play_video_then_countdown(path):
         if not ret:
             break
         last_frame = frame.copy()
+        
         resized_frame = cv2.resize(frame, (1080, 1080))
         cv2.imshow("Display", resized_frame)
         last_frame = resized_frame.copy()
+
         if cv2.waitKey(int(1500 // frame_rate)) & 0xFF == ord('q'):
             exit(0)
 
@@ -60,6 +81,10 @@ def play_video_then_countdown(path):
         cv2.putText(overlay, str(i), (x, y), cv2.FONT_HERSHEY_SIMPLEX,
                     3, (0, 0, 255), 6)
         cv2.imshow("Display", overlay)
+
+        if i == "GO":
+            send_gesture_classification(gesture_index)  # You pass index into the function
+
         if cv2.waitKey(1000) & 0xFF == ord('q'):
             exit(0)
 
@@ -73,9 +98,11 @@ def play_video_then_countdown(path):
 def play_open_close_alternating(duration, pairs):
     start_time = time.time()
     while time.time() - start_time < duration:
-        video_path = random.choice(video_list)
+        index = random.randint(0, 5)  # Or len(video_list) - 1
+        video_path = video_list[index]
+        
         print(f"[PLAY] {os.path.basename(video_path)}")
-        play_video_then_countdown(video_path)
+        play_video_then_countdown(video_path, index)
 
         if time.time() - start_time >= duration:
             break
