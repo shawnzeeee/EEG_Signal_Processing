@@ -7,12 +7,14 @@ import os
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # --- CONFIG ---
-open_close_pairs = { 
-         os.path.join(script_dir,"GestureVideos/index_close.mp4")       : os.path.join(script_dir,"GestureVideos/index_open.mp4"), 
-         os.path.join(script_dir,"GestureVideos/middle_close.mp4")      : os.path.join(script_dir,"GestureVideos/middle_open.mp4"), 
-         os.path.join(script_dir,"GestureVideos/pinky_ring_close.mp4")  : os.path.join(script_dir,"GestureVideos/pinky_ring_open.mp4"), 
-         os.path.join(script_dir,"GestureVideos/1thumb_close.mp4")      : os.path.join(script_dir,"GestureVideos/1thumb_open.mp4"), 
-}
+video_list = [ 
+         os.path.join(script_dir,"GestureVideos/Handclose2.mp4"),
+         os.path.join(script_dir,"GestureVideos/Handopen2.mp4"), 
+         os.path.join(script_dir,"GestureVideos/Okclose2.mp4"),
+         os.path.join(script_dir,"GestureVideos/Okopen2.mp4"), 
+         os.path.join(script_dir,"GestureVideos/Prongclose2.mp4"),
+         os.path.join(script_dir,"GestureVideos/Prongopen2.mp4"), 
+]
 
 cycle_duration = 2 * 60   # 2 minutes per video session
 break_duration = 2 * 60   # 2-minute break
@@ -25,16 +27,20 @@ def play_video_then_countdown(path):
         print(f"Cannot open: {path}")
         return
 
-    frame_rate = cap.get(cv2.CAP_PROP_FPS) or 30
+    frame_rate = 60
     last_frame = None
-
+    cv2.namedWindow("Display", cv2.WINDOW_NORMAL)
+    cv2.resizeWindow("Display", 1080, 1080)
+    
     # --- Play the video and remember the last frame ---
     while True:
         ret, frame = cap.read()
         if not ret:
             break
         last_frame = frame.copy()
-        cv2.imshow("Display", frame)
+        resized_frame = cv2.resize(frame, (1080, 1080))
+        cv2.imshow("Display", resized_frame)
+        last_frame = resized_frame.copy()
         if cv2.waitKey(int(1500 // frame_rate)) & 0xFF == ord('q'):
             exit(0)
 
@@ -67,18 +73,9 @@ def play_video_then_countdown(path):
 def play_open_close_alternating(duration, pairs):
     start_time = time.time()
     while time.time() - start_time < duration:
-        open_vid = random.choice(list(pairs.keys()))
-        close_vid = pairs[open_vid]
-
-        print(f"[OPEN] Playing: {open_vid}")
-        play_video_then_countdown(open_vid)
-        
-        if time.time() - start_time >= duration:
-            break
-
-        time.sleep(3)
-        print(f"[CLOSE] Playing: {close_vid}")
-        play_video_then_countdown(close_vid)
+        video_path = random.choice(video_list)
+        print(f"[PLAY] {os.path.basename(video_path)}")
+        play_video_then_countdown(video_path)
 
         if time.time() - start_time >= duration:
             break
@@ -100,7 +97,7 @@ def show_break(duration):
                     1, (0, 0, 0), 2)
 
         cv2.imshow("Display", frame)
-        if cv2.waitKey(1000) & 0xFF == ord('q'):
+        if cv2.waitKey(2000) & 0xFF == ord('q'):
             exit(0)
         
 # --- MAIN LOOP ---
@@ -109,7 +106,7 @@ cycle_count = 0
 
 while time.time() - session_start < total_duration:
     # Alternate open-close videos for 2 minutes
-    play_open_close_alternating(cycle_duration, open_close_pairs)
+    play_open_close_alternating(cycle_duration, video_list)
     print("[BREAK] Taking a 2-minute break...")
     show_break(break_duration)
 
