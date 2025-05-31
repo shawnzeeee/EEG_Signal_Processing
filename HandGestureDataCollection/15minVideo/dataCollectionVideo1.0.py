@@ -6,6 +6,7 @@ import os
 import mmap
 import struct
 import math
+import csv
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -34,6 +35,8 @@ video_list = [
 #for controlled randomness
 play_counts = {path: 0 for path in video_list}
 
+play_order = []
+
 gesture_labels = {
     "Handopen2.mp4": "Open Hand",
     "Handclose2.mp4": "Close Hand",
@@ -44,7 +47,7 @@ gesture_labels = {
 }
 
 cycle_duration = 2 * 60   # 2 minutes per video session
-break_duration = 2 * 60   # 2-minute break
+break_duration = 1 * 60   # 2-minute break
 total_duration = 15 * 60  # total session time
 
 # --- HELPER FUNCTIONS ---
@@ -192,7 +195,8 @@ def play_balanced_videos_for(duration):
     while time.time() - start_time < duration:
         video_path = get_least_played_video()
         gesture_index = video_list.index(video_path)
-        
+        play_order.append(video_path)
+
         print(f"[PLAY] {os.path.basename(video_path)} (index: {gesture_index})")
         play_video_then_countdown(video_path, gesture_index)
 
@@ -279,12 +283,25 @@ session_start = time.time()
 cycle_count = 0
 
 while time.time() - session_start < total_duration:
-    # Alternate open-close videos for 2 minutes
     play_balanced_videos_for(cycle_duration)
-    print("[BREAK] Taking a 2-minute break...")
+    print("[BREAK] Taking a break...")
     show_break(break_duration)
 
 print("=== Session Complete ===")
 print("Video play counts:")
 for video, count in play_counts.items():
     print(f"{os.path.basename(video)}: {count}")
+
+filename = input("Enter a filename (without extension): ").strip()
+csv_path = os.path.join(script_dir, f"{filename}.csv")
+
+with open(csv_path, mode='w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(["Order", "Video Label", "Filename", "Class Index"])
+
+    for i, path in enumerate(play_order, start=1):
+        label = gesture_labels.get(os.path.basename(path), os.path.basename(path))
+        class_index = video_list.index(path)  # Get index from original list
+        writer.writerow([i, label, os.path.basename(path), class_index])
+
+print(f"Play order saved to {csv_path}")
