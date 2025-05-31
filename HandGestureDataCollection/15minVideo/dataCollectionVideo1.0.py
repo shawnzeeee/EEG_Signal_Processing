@@ -5,6 +5,7 @@ import numpy as np
 import os
 import mmap
 import struct
+import math
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -105,7 +106,12 @@ def play_video_then_countdown(path, gesture_index):
         # Draw label text
         cv2.putText(resized_frame, label, (text_x, text_y), font,
                     font_scale, (0, 0, 0), thickness)
-
+        
+        # Calculate progress bar based on session time
+        elapsed = time.time() - session_start
+        progress = min(elapsed / total_duration, 1.0)
+        draw_progress_bar(resized_frame, progress)
+        
         cv2.imshow("Display", resized_frame)
         last_frame = resized_frame.copy()
 
@@ -157,6 +163,10 @@ def play_video_then_countdown(path, gesture_index):
         cv2.rectangle(overlay, top_left, bottom_right, (255, 255, 255), -1)
         cv2.rectangle(overlay, top_left, bottom_right, (0, 0, 0), 2)
         cv2.putText(overlay, countdown_text, (text_x, text_y+10), font, font_scale_countdown, (0, 0, 0), thickness_countdown)
+        
+        elapsed = time.time() - session_start
+        progress = min(elapsed / total_duration, 1.0)
+        draw_progress_bar(overlay, progress)
 
         cv2.imshow("Display", overlay)
 
@@ -167,6 +177,10 @@ def play_video_then_countdown(path, gesture_index):
             exit(0)
 
     # --- Hold last frame for 2 seconds ---
+    elapsed = time.time() - session_start
+    progress = min(elapsed / total_duration, 1.0)
+    draw_progress_bar(last_frame, progress)
+    
     cv2.imshow("Display", last_frame)
     if cv2.waitKey(1000) & 0xFF == ord('q'):
         exit(0)
@@ -193,11 +207,11 @@ def show_break(duration):
         cv2.putText(img, text, (text_x, y), font, font_scale, color, thickness)
 
     # Use higher resolution for better text quality
-    frame_height, frame_width = 800, 800
+    frame_height, frame_width = 1080, 1080
     start = time.time()
 
     while time.time() - start < duration:
-        remaining = int(duration - (time.time() - start))
+        remaining = math.ceil(duration - (time.time() - start))
 
         frame = np.full((frame_height, frame_width, 3), 230, dtype=np.uint8)  # Light gray
 
@@ -207,8 +221,60 @@ def show_break(duration):
         cv2.imshow("Display", frame)
         if cv2.waitKey(1000) & 0xFF == ord('q'):
             exit(0)
-        
+
+def draw_progress_bar(frame, progress, max_width=200, height=20):
+    """
+    Draws a progress bar at the top-right of the given frame.
+    `progress` should be a float between 0 and 1.
+    """
+    h, w, _ = frame.shape
+    x_start = w - max_width - 30
+    y_start = 30
+
+    # Outline
+    cv2.rectangle(frame, (x_start, y_start), (x_start + max_width, y_start + height), (0, 0, 0), 2)
+
+    # Fill
+    fill_width = int(progress * max_width)
+    cv2.rectangle(frame, (x_start, y_start), (x_start + fill_width, y_start + height), (0, 128, 0), -1)
+
+def show_instructions():
+    frame = np.full((800, 1000, 3), 245, dtype=np.uint8)  # soft gray background
+    font = cv2.FONT_HERSHEY_SIMPLEX
+
+    instructions = [
+        "Welcome to the Hand Gesture Practice Session!",
+        "",
+        "You will see short videos demonstrating hand gestures.",
+        "Each gesture will end with a countdown (3..2..1..GO).",
+        "After 'GO' appears, perform the gesture yourself.",
+        "",
+        "Make sure your hand is in the correct starting position",
+        "before performing the act.",
+        "There will be 2 min breaks after each 2 minute set.",
+        "",
+        "Press 'q' at any time to quit.",
+        "Press ENTER to begin..."
+    ]
+
+    y = 100
+    for line in instructions:
+        text_size, _ = cv2.getTextSize(line, font, 1, 2)
+        x = (frame.shape[1] - text_size[0]) // 2
+        cv2.putText(frame, line, (x, y), font, 1, (0, 0, 0), 2)
+        y += 60
+
+    cv2.imshow("Display", frame)
+    while True:
+        key = cv2.waitKey(0) & 0xFF
+        if key == ord('\r') or key == 13:  # Enter key on Windows
+            break
+        elif key == ord('q'):
+            exit(0)
+
 # --- MAIN LOOP ---
+show_instructions()
+
 session_start = time.time()
 cycle_count = 0
 
