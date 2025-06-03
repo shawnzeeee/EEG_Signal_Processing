@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from random import shuffle
 
-file_path = "EEG_Recordings/ShawnAndNick"
+file_path = "EEG_Recordings"
 
 # Initialize an empty DataFrame to store combined data
 combined_df = pd.DataFrame()
@@ -11,17 +11,26 @@ combined_df = pd.DataFrame()
 # Define class mappings
 class_mapping = {
     0: "Nothing",
-    1: "Thumb open",
-    2: "Thumb close",
-    3: "Index open",
-    4: "Index close",
-    5: "Middle open",
-    6: "Middle close",
-    7: "Ring and pinky open",
-    8: "Ring and pinky close",
-    9: "Full hand open",
-    10: "Full hand close"
+    1: "Hand open",
+    2: "Hand close",
+    3: "Ok open",
+    4: "Ok close",
+    5: "Prong open",
+    6: "Prong close"
 }
+# class_mapping = {
+#     0: "Nothing",
+#     1: "Thumb open",
+#     2: "Thumb close",
+#     3: "Index open",
+#     4: "Index close",
+#     5: "Middle open",
+#     6: "Middle close",
+#     7: "Ring and pinky open",
+#     8: "Ring and pinky close",
+#     9: "Full hand open",
+#     10: "Full hand close"
+# }
 
 # Traverse all subdirectories and files
 zero_rows = []

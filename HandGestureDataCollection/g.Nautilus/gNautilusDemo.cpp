@@ -17,8 +17,8 @@
 
 
 #define PYTHON_SCRIPT "\"C:\\Program Files\\Python310\\python.exe\"" 
-#define SCRIPT_PATH "\"../hand-gesture-recognition-mediapipe/app.py\""
-//#define SCRIPT_PATH "\"../15minVideo/dataCollectionVideo1.0.py\""
+//#define SCRIPT_PATH "\"../hand-gesture-recognition-mediapipe/app.py\""
+#define SCRIPT_PATH "\"../15minVideo/dataCollectionVideo1.0.py\""
 
 #define SHARED_MEMORY_NAME L"Local\\GestureSharedMemory"  // Name of shared memory
 #define SHARED_MEMORY_SIZE 256  // Buffer size
@@ -35,9 +35,9 @@
 
 // Definition of network specific stuff.
 //-----------------------------------------------------------	--------------------------
-#define HOST_IP "207.23.217.234" // Default address is the loopback address, else the ip of the computer running GDS.
+#define HOST_IP "207.23.192.231" // Default address is the loopback address, else the ip of the computer running GDS.
 #define HOST_PORT 50223     // The default port of GDS is 50223.
-#define LOCAL_IP "207.23.168.88"// Default address is the loppback address, else the ip of the client machine.
+#define LOCAL_IP "142.58.78.113"// Default address is the loppback address, else the ip of the client machine.
 #define LOCAL_PORT 50224    // Any free port on the local machine.
 
 // Function declarations.
@@ -459,11 +459,11 @@ int _tmain(int argc, _TCHAR* argv[])
 				int gesture_code = *(int*)pBuf;
 				//std::cout << "Received Gesture Code: " << gesture_code << std::endl;
 				int total_floats = scans_available * buffer_size_per_scan;
-
+				
 				for (int i = 0; i < total_floats; ++i) {
 					if (((total_acquired_scans * buffer_size_per_scan + i)+2) % 6 == 0 && total_acquired_scans + i >0) {
 						int send_code = gesture_code;
-						if (p_gesture_code == gesture_code) {
+						/*if (p_gesture_code == gesture_code) {
 							send_code = 0;
 						}
 						else {
@@ -540,6 +540,13 @@ int _tmain(int argc, _TCHAR* argv[])
 							if (p_gesture_code == 9 && gesture_code == 8) {
 								send_code = 8;
 							}
+						}*/
+						
+						if (p_gesture_code == gesture_code){
+							send_code = 0;
+						}
+						else{
+							send_code = gesture_code;
 						}
 						data_buffer[i] = static_cast<float>(send_code);
 						p_gesture_code = gesture_code;

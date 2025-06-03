@@ -46,16 +46,16 @@ gesture_labels = {
     "Prongclose2.mp4": "Prong Gesture (Close)",
 }
 
-cycle_duration = 2 * 60   # 2 minutes per video session
-break_duration = 1 * 60   # 2-minute break
-total_duration = 15 * 60  # total session time
+cycle_duration = 0.2 * 60   # 2 minutes per video session
+break_duration = 0.2 * 60   # 2-minute break
+total_duration = 0.5 * 60  # total session time
 
 # --- HELPER FUNCTIONS ---
 def send_gesture_classification(gesture_code):
     """Writes an integer gesture classification (0 to 5) into shared memory."""
-    print(f"sending gesture classification", gesture_code)
+    print(f"sending gesture classification", gesture_code + 1)
     shm.seek(0)
-    shm.write(struct.pack('i', gesture_code))
+    shm.write(struct.pack('i', gesture_code + 1))
 
 def get_least_played_video():
     min_play = min(play_counts.values())
@@ -73,7 +73,7 @@ def play_video_then_countdown(path, gesture_index):
     frame_rate = 60
     last_frame = None
     cv2.namedWindow("Display", cv2.WINDOW_NORMAL)
-    cv2.resizeWindow("Display", 1080, 1080)
+    cv2.resizeWindow("Display", 720, 720)
     
     # --- Play the video and remember the last frame ---
     while True:
@@ -82,7 +82,7 @@ def play_video_then_countdown(path, gesture_index):
             break
         last_frame = frame.copy()
         
-        resized_frame = cv2.resize(frame, (1080, 1080))
+        resized_frame = cv2.resize(frame, (720, 720))
 
         # Draw custom title
         filename = os.path.basename(path)
@@ -197,7 +197,7 @@ def play_balanced_videos_for(duration):
         gesture_index = video_list.index(video_path)
         play_order.append(video_path)
 
-        print(f"[PLAY] {os.path.basename(video_path)} (index: {gesture_index})")
+        print(f"[PLAY] {os.path.basename(video_path)} (index: {gesture_index + 1})")
         play_video_then_countdown(video_path, gesture_index)
 
         if time.time() - start_time >= duration:
@@ -211,7 +211,7 @@ def show_break(duration):
         cv2.putText(img, text, (text_x, y), font, font_scale, color, thickness)
 
     # Use higher resolution for better text quality
-    frame_height, frame_width = 1080, 1080
+    frame_height, frame_width = 720, 720
     start = time.time()
 
     while time.time() - start < duration:
@@ -233,8 +233,8 @@ def draw_progress_bar(frame, progress, max_width=200, height=20):
     """
     h, w, _ = frame.shape
     x_start = w - max_width - 30
-    y_start = 30
-
+    y_start = h - height - 30
+    
     # Outline
     cv2.rectangle(frame, (x_start, y_start), (x_start + max_width, y_start + height), (0, 0, 0), 2)
 
@@ -284,6 +284,8 @@ cycle_count = 0
 
 while time.time() - session_start < total_duration:
     play_balanced_videos_for(cycle_duration)
+    if (time.time() - session_start > total_duration):
+        break
     print("[BREAK] Taking a break...")
     show_break(break_duration)
 
@@ -292,7 +294,7 @@ print("Video play counts:")
 for video, count in play_counts.items():
     print(f"{os.path.basename(video)}: {count}")
 
-filename = input("Enter a filename (without extension): ").strip()
+filename = "test6"
 csv_path = os.path.join(script_dir, f"{filename}.csv")
 
 with open(csv_path, mode='w', newline='') as file:
