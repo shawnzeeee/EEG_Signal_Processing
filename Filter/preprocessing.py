@@ -25,29 +25,37 @@ def calculate_bandpowers(signal, fs=250):
     return alpha_power, beta_power
 
 # Load the CSV file
-df = pd.read_csv("C:\\Users\\shawn_hx71ej8\\EEG_Signal_Processing\\Filter\\combined_data.csv")
-
+#df = pd.read_csv("C:\\Users\\shawn_hx71ej8\\EEG_Signal_Processing\\Filter\\combined_data.csv")
+df = pd.read_csv("C:\\Users\\shawn\\EEG_Signal_Processing\\Filter\\combined_data.csv")
 # Rename columns to numbers
 df.columns = range(df.shape[1])
 
+
+
 # Separate class 0 (idle) and non-class 0 (active)
-idle_df = df.iloc[:135000]  # First 135,000 rows are class 0
-active_df = df.iloc[135000:]  # Remaining rows are non-class 0
+idle_candidates = df.iloc[:135000]
+idle_indices = idle_candidates.sample(n=min(200, len(idle_candidates)), random_state=42).index
+
+# Select rows beyond 135000, with non-zero class, shuffle, and match size to idle_indices
+active_candidates = df.iloc[135000:]
+active_candidates = active_candidates[active_candidates[4] != 0]
+active_indices = active_candidates.sample(n=len(idle_indices), random_state=42).index
+
 
 # Prepare the output data
 output_data = []
 
 # Function to process windows and extract features
-def process_windows(data, label, num_windows):
+def process_windows(center_indices, label, df, window_size=500):
     processed_data = []
-    for i in range(num_windows):
-        start_idx = i * 500
-        end_idx = start_idx + 500
-        if end_idx > len(data):
-            break
-        window = data.iloc[start_idx:end_idx]
-
-        # Extract features for each channel
+    half_window = window_size // 2
+    for idx in center_indices:
+        start_idx = idx - half_window
+        end_idx = idx + half_window
+        # Ensure window is within bounds
+        if start_idx < 0 or end_idx > len(df):
+            continue
+        window = df.iloc[start_idx:end_idx]
         features = []
         for channel in range(4):  # Channels are numbered 0, 1, 2, 3
             signal = window[channel].values
@@ -55,19 +63,17 @@ def process_windows(data, label, num_windows):
             alpha_power, beta_power = calculate_bandpowers(signal)
             rms = calculate_rms(signal)
             features.extend([mobility, complexity, alpha_power, beta_power, rms])
-
-        # Add the class label
         features.append(label)
+        #features.append(df.iloc[idx, 4])
         processed_data.append(features)
     return processed_data
 
-# Process class 0 (idle state)
-num_idle_windows = len(idle_df) // 500  # Number of 2-second windows for class 0
-output_data.extend(process_windows(idle_df, 0, num_idle_windows))
+# Now, use the indices from idle_df and active_df as center points
 
-# Process class 1 (active state) with the same number of windows as class 0
-output_data.extend(process_windows(active_df, 1, num_idle_windows))
 
+output_data = []
+output_data.extend(process_windows(idle_indices, 0, df))
+output_data.extend(process_windows(active_indices, 1, df))
 # Create a DataFrame for the output data
 columns = [
     "Ch1_Mobility", "Ch1_Complexity", "Ch1_Alpha", "Ch1_Beta", "Ch1_RMS",
