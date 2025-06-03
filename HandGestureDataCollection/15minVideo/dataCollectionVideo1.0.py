@@ -15,12 +15,13 @@ SHARED_MEMORY_SIZE = 256
 shm = mmap.mmap(-1, SHARED_MEMORY_SIZE, SHARED_MEMORY_NAME, access=mmap.ACCESS_WRITE)
 
 #classifications of hand gestures:
-#Hand close     = 0
-#Hand open      = 1
-#Ok close       = 2
-#Ok open        = 3
-#Prong close    = 4
-#Prong open     = 5
+#Idle           = 0
+#Hand close     = 1
+#Hand open      = 2
+#Ok close       = 3
+#Ok open        = 4
+#Prong close    = 5
+#Prong open     = 6
 
 # --- CONFIG ---
 video_list = [ 
@@ -304,6 +305,6 @@ with open(csv_path, mode='w', newline='') as file:
     for i, path in enumerate(play_order, start=1):
         label = gesture_labels.get(os.path.basename(path), os.path.basename(path))
         class_index = video_list.index(path)  # Get index from original list
-        writer.writerow([i, label, os.path.basename(path), class_index])
+        writer.writerow([i, label, os.path.basename(path), class_index + 1])
 
 print(f"Play order saved to {csv_path}")

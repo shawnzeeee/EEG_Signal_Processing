@@ -26,12 +26,12 @@ df.to_csv(csv_filename, index=False)
 # Define class mappings
 class_mapping = {
     0: "Nothing",
-    1: "Hand open",
-    2: "Hand close",
-    3: "Ok open",
-    4: "Ok close",
-    5: "Prong open",
-    6: "Prong close"
+    1: "Hand close",
+    2: "Hand open",
+    3: "Ok close",
+    4: "Ok open",
+    5: "Prong close",
+    6: "Prong open"
 }
 # class_mapping = {
 #     0: "Nothing",
@@ -60,8 +60,8 @@ classmarkers = reshaped_data[:, 4]  # 5th column: Class
 timestamps = reshaped_data[:, 5]  # Last column: timestamps
 
 # Plot the EEG data with timestamps on the x-axis and non-zero class markings
-start = 15000
-end = 25000
+start = 500
+end = 50000
 plt.figure(figsize=(12, 8))
 for i in range(4):  # First 4 columns are EEG channels
     plt.subplot(4, 1, i + 1)

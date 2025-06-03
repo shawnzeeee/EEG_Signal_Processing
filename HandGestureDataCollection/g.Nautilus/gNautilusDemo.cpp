@@ -30,7 +30,7 @@
 //-------------------------------------------------------------------------------------
 #define DATA_FILE "data.bin"
 #define SAMPLE_RATE 250 // [Hz]
-#define DURATION_DAQ 180 // [s]
+#define DURATION_DAQ 60 // [s]
 #define DATA_READY_TRESHOLD_MS 30 // [ms]
 
 // Definition of network specific stuff.

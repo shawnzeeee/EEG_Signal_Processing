@@ -1,1 +1,18 @@
-﻿
+﻿  stdafx.cpp
+  gNautilusDemo.cpp
+C:\Users\nicho\OneDrive\Documents\Spring2025\ENSC405\EEG_Signal_Processing\HandGestureDataCollection\g.Nautilus\gNautilusDemo.cpp(461,22): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  (compiling source file '/gNautilusDemo.cpp')
+  
+C:\Users\nicho\OneDrive\Documents\Spring2025\ENSC405\EEG_Signal_Processing\HandGestureDataCollection\g.Nautilus\gNautilusDemo.cpp(182,2): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  (compiling source file '/gNautilusDemo.cpp')
+  
+C:\Users\nicho\OneDrive\Documents\Spring2025\ENSC405\EEG_Signal_Processing\HandGestureDataCollection\g.Nautilus\gNautilusDemo.cpp(184,2): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  (compiling source file '/gNautilusDemo.cpp')
+  
+C:\Users\nicho\OneDrive\Documents\Spring2025\ENSC405\EEG_Signal_Processing\HandGestureDataCollection\g.Nautilus\gNautilusDemo.cpp(267,7): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  (compiling source file '/gNautilusDemo.cpp')
+  
+C:\Users\nicho\OneDrive\Documents\Spring2025\ENSC405\EEG_Signal_Processing\HandGestureDataCollection\g.Nautilus\gNautilusDemo.cpp(312,2): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  (compiling source file '/gNautilusDemo.cpp')
+  
+  gNautilusDemo.vcxproj -> C:\Users\nicho\OneDrive\Documents\Spring2025\ENSC405\EEG_Signal_Processing\HandGestureDataCollection\g.Nautilus\x64\Debug\gNautilusDemo.exe
