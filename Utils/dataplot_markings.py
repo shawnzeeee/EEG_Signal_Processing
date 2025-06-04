@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 #file_path = "EEG_Recordings/Shawn/BP2/ThumbFromOpen/trial1.bin"
 
 #file_path = "EEG_Recordings/Shawn/1minOpenClose/trial5.bin"
-file_path = "EEG_Recordings/data.bin"
+file_path = "EEG_Recordings/440/Nick/4 channels/trial2.bin"
 
 # Load the binary file and read as float32
 data_array = np.fromfile(file_path, dtype=np.float32)
@@ -17,7 +17,8 @@ trimmed_data = data_array[:trimmed_size]
 
 # Reshape into 6 columns: [Channel1, Channel2, Channel3, Channel4, Class, Timestamp]
 reshaped_data = trimmed_data.reshape(-1, 6)
-print(reshaped_data)
+#print(reshaped_data)
+
 # Save reshaped data to CSV file
 csv_filename = "reshaped_data.csv"
 df = pd.DataFrame(reshaped_data, columns=["Channel 1", "Channel 2", "Channel 3", "Channel 4", "Class", "Timestamp"])
@@ -61,7 +62,7 @@ timestamps = reshaped_data[:, 5]  # Last column: timestamps
 
 # Plot the EEG data with timestamps on the x-axis and non-zero class markings
 start = 500
-end = 50000
+end = 250000
 plt.figure(figsize=(12, 8))
 for i in range(4):  # First 4 columns are EEG channels
     plt.subplot(4, 1, i + 1)

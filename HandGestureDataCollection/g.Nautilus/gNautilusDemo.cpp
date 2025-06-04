@@ -30,12 +30,12 @@
 //-------------------------------------------------------------------------------------
 #define DATA_FILE "data.bin"
 #define SAMPLE_RATE 250 // [Hz]
-#define DURATION_DAQ 60 // [s]
+#define DURATION_DAQ 960 // [s]
 #define DATA_READY_TRESHOLD_MS 30 // [ms]
 
 // Definition of network specific stuff.
 //-----------------------------------------------------------	--------------------------
-#define HOST_IP "207.23.192.231" // Default address is the loopback address, else the ip of the computer running GDS.
+#define HOST_IP "207.23.206.156" // Default address is the loopback address, else the ip of the computer running GDS.
 #define HOST_PORT 50223     // The default port of GDS is 50223.
 #define LOCAL_IP "142.58.78.113"// Default address is the loppback address, else the ip of the client machine.
 #define LOCAL_PORT 50224    // Any free port on the local machine.

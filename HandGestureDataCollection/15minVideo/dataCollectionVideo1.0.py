@@ -47,9 +47,9 @@ gesture_labels = {
     "Prongclose2.mp4": "Prong Gesture (Close)",
 }
 
-cycle_duration = 0.2 * 60   # 2 minutes per video session
-break_duration = 0.2 * 60   # 2-minute break
-total_duration = 0.5 * 60  # total session time
+cycle_duration = 2 * 60   # 2 minutes per video session
+break_duration = 0.5 * 60   # 2-minute break
+total_duration = 15 * 60  # total session time
 
 # --- HELPER FUNCTIONS ---
 def send_gesture_classification(gesture_code):
@@ -295,7 +295,7 @@ print("Video play counts:")
 for video, count in play_counts.items():
     print(f"{os.path.basename(video)}: {count}")
 
-filename = "test6"
+filename = "test"
 csv_path = os.path.join(script_dir, f"{filename}.csv")
 
 with open(csv_path, mode='w', newline='') as file:
