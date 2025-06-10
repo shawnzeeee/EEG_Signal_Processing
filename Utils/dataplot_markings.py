@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 #file_path = "EEG_Recordings/Shawn/BP2/ThumbFromOpen/trial1.bin"
 
 #file_path = "EEG_Recordings/Shawn/1minOpenClose/trial5.bin"
-file_path = "EEG_Recordings/440/Nick/4 channels/trial2.bin"
+file_path = "EEG_Recordings/440/Shawn/4 channels/30 sec break/trial3.bin"
 
 # Load the binary file and read as float32
 data_array = np.fromfile(file_path, dtype=np.float32)
@@ -32,7 +32,8 @@ class_mapping = {
     3: "Ok close",
     4: "Ok open",
     5: "Prong close",
-    6: "Prong open"
+    6: "Prong open",
+    16: "Break Start"  # Added new classification
 }
 # class_mapping = {
 #     0: "Nothing",
@@ -61,8 +62,18 @@ classmarkers = reshaped_data[:, 4]  # 5th column: Class
 timestamps = reshaped_data[:, 5]  # Last column: timestamps
 
 # Plot the EEG data with timestamps on the x-axis and non-zero class markings
-start = 500
-end = 250000
+start = 0
+end = 25000
+
+# Print all unique classifications that occur in order
+class_sequence = classmarkers[start:end]
+unique_classes_in_order = [class_sequence[0]] if len(class_sequence) > 0 else []
+for c in class_sequence[1:]:
+    if c != unique_classes_in_order[-1]:
+        unique_classes_in_order.append(c)
+print("Classifications in order (from index", start, "to", end, "):")
+print([int(c) for c in unique_classes_in_order])
+
 plt.figure(figsize=(12, 8))
 for i in range(4):  # First 4 columns are EEG channels
     plt.subplot(4, 1, i + 1)
@@ -77,8 +88,12 @@ for i in range(4):  # First 4 columns are EEG channels
     for idx in non_zero_indices:
         timestamp = timestamps[idx + start]
         amplitude = channel_data[idx + start, i]
-        class_label = class_mapping.get(int(classmarkers[idx + start]), "Unknown")
-        plt.scatter(timestamp, amplitude, color='red', zorder=5)
+        class_value = int(classmarkers[idx + start])
+        class_label = class_mapping.get(class_value, "Unknown")
+        if class_value == 16:
+            plt.scatter(timestamp, amplitude, color='green', zorder=5)  # Green dot for class 16
+        else:
+            plt.scatter(timestamp, amplitude, color='red', zorder=5)
         plt.text(timestamp, amplitude, class_label, fontsize=8, color='blue', ha='right', va='bottom')
     
     plt.title(f'Channel {i+1}')

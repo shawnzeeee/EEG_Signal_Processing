@@ -288,6 +288,8 @@ while time.time() - session_start < total_duration:
     if (time.time() - session_start > total_duration):
         break
     print("[BREAK] Taking a break...")
+    #Sending a break classification
+    send_gesture_classification(15)
     show_break(break_duration)
 
 print("=== Session Complete ===")
