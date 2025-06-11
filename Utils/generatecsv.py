@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from random import shuffle
 
-file_path = "EEG_Recordings"
+file_path = "EEG_Recordings/440"
 
 # Initialize an empty DataFrame to store combined data
 combined_df = pd.DataFrame()
@@ -75,7 +75,6 @@ for root, dirs, files in os.walk(file_path):
 combined_csv_filename = os.path.join(file_path, "combined_data.csv")
 combined_df.to_csv(combined_csv_filename, index=False, header=False)
 
-
 # Extract non-zero classification rows without resetting the index
 non_zero_rows = combined_df[combined_df["Class"] != 0]
 zero_rows = combined_df[(combined_df["Class"] == 0) & (combined_df.index >= 1) & (combined_df.index <= 135000)]
@@ -84,7 +83,6 @@ selected_zero_rows = zero_rows[zero_rows.index.map(lambda x: np.random.randint(1
 
 final_dataset = pd.concat([selected_zero_rows, non_zero_rows])
 #final_dataset = selected_zero_rows
-
 
 # Shuffle the rows
 shuffled_rows = final_dataset.sample(frac=1, random_state=42)
