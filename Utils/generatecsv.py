@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from random import shuffle
 
-file_path = "EEG_Recordings/440"
+file_path = "EEG_Recordings/440/ShawnNick"
 
 # Initialize an empty DataFrame to store combined data
 combined_df = pd.DataFrame()
@@ -16,7 +16,8 @@ class_mapping = {
     3: "Ok open",
     4: "Ok close",
     5: "Prong open",
-    6: "Prong close"
+    6: "Prong close",
+    16: "Break"
 }
 # class_mapping = {
 #     0: "Nothing",

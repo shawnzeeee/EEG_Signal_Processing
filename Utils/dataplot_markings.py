@@ -5,8 +5,8 @@ import matplotlib.pyplot as plt
 # Define the file path again
 #file_path = "EEG_Recordings/Shawn/BP2/ThumbFromOpen/trial1.bin"
 
-#file_path = "EEG_Recordings/Shawn/1minOpenClose/trial5.bin"
-file_path = "EEG_Recordings/440/Shawn/4 channels/30 sec break/trial3.bin"
+file_path = "EEG_Recordings/440/Nick/4 channels/trial3.bin"
+#file_path = "EEG_Recordings/440/Shawn/4 channels/30 sec break/trial4.bin"
 
 # Load the binary file and read as float32
 data_array = np.fromfile(file_path, dtype=np.float32)
@@ -62,8 +62,8 @@ classmarkers = reshaped_data[:, 4]  # 5th column: Class
 timestamps = reshaped_data[:, 5]  # Last column: timestamps
 
 # Plot the EEG data with timestamps on the x-axis and non-zero class markings
-start = 5000
-end = 7000
+start =55000
+end = 140000
 
 # Print all unique classifications that occur in order
 class_sequence = classmarkers[start:end]
