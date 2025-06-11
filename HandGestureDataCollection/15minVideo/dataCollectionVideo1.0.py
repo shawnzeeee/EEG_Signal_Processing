@@ -71,7 +71,7 @@ def play_video_then_countdown(path, gesture_index):
         print(f"Cannot open: {path}")
         return
 
-    frame_rate = 60
+    frame_rate = 120
     last_frame = None
     cv2.namedWindow("Display", cv2.WINDOW_NORMAL)
     cv2.resizeWindow("Display", 720, 720)
