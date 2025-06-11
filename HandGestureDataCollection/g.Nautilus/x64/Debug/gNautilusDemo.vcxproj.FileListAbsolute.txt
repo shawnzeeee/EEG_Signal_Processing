@@ -1,1 +1,2 @@
 C:\Users\nicho\OneDrive\Documents\Spring2025\ENSC405\EEG_Signal_Processing\HandGestureDataCollection\g.Nautilus\x64\Debug\gNautilusDemo.exe
+C:\Program Files\EEG_Signal_Processing\HandGestureDataCollection\g.Nautilus\x64\Debug\gNautilusDemo.exe
