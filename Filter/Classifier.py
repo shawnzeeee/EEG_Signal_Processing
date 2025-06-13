@@ -9,7 +9,7 @@ from sklearn.manifold import TSNE
 
 
 # Load the processed CSV file
-data = pd.read_csv("processed_features.csv")
+data = pd.read_csv("Filter/ProcessedFeatures/Shawn/processed_features.csv")
 
 # Separate features and labels
 X = data.iloc[:, :-1].values  # All columns except the last one (features)
@@ -17,8 +17,8 @@ y = data.iloc[:, -1].values   # The last column (class labels)
 
 # Split the data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+print("Loaded data")
 
-# Train an SVM classifier
 svm = SVC(kernel='linear', random_state=42)
 svm.fit(X_train, y_train)
 

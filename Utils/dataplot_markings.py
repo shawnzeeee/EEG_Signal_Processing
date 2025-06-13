@@ -62,13 +62,8 @@ classmarkers = reshaped_data[:, 4]  # 5th column: Class
 timestamps = reshaped_data[:, 5]  # Last column: timestamps
 
 # Plot the EEG data with timestamps on the x-axis and non-zero class markings
-<<<<<<< HEAD
-start = 40000
-end = 60000
-=======
 start =55000
 end = 140000
->>>>>>> b5859303c7b4b650a0f009f4b40b45816c161f49
 
 # Print all unique classifications that occur in order
 class_sequence = classmarkers[start:end]
