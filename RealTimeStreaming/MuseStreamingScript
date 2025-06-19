@@ -1,3 +1,5 @@
+#this is not complete, testing on the MuseStreamingTest.py
+
 import subprocess
 import time
 from pylsl import StreamInlet, resolve_stream, resolve_streams
