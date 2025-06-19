@@ -1,0 +1,12 @@
+from pylsl import StreamInlet, resolve_stream
+
+print("[INFO] Looking for EEG stream...")
+streams = resolve_stream('type', 'EEG')
+print("[INFO] EEG stream found.")
+
+inlet = StreamInlet(streams[0])
+
+print("[INFO] Streaming EEG data. Press Ctrl+C to stop.")
+while True:
+    sample, timestamp = inlet.pull_sample()
+    print(f"Timestamp: {timestamp:.3f} | EEG: {sample}")
