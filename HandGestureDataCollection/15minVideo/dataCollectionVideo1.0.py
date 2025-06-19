@@ -26,11 +26,11 @@ shm = mmap.mmap(-1, SHARED_MEMORY_SIZE, SHARED_MEMORY_NAME, access=mmap.ACCESS_W
 # --- CONFIG ---
 video_list = [ 
          os.path.join(script_dir,"GestureVideos/Handclose2.mp4"),
-         os.path.join(script_dir,"GestureVideos/Handopen2.mp4"), 
+         #os.path.join(script_dir,"GestureVideos/Handopen2.mp4"), 
          os.path.join(script_dir,"GestureVideos/Okclose2.mp4"),
-         os.path.join(script_dir,"GestureVideos/Okopen2.mp4"), 
+         #os.path.join(script_dir,"GestureVideos/Okopen2.mp4"), 
          os.path.join(script_dir,"GestureVideos/Prongclose2.mp4"),
-         os.path.join(script_dir,"GestureVideos/Prongopen2.mp4"), 
+         #os.path.join(script_dir,"GestureVideos/Prongopen2.mp4"), 
 ]
 
 #for controlled randomness
@@ -196,7 +196,8 @@ def play_balanced_videos_for(duration):
     while time.time() - start_time < duration:
         video_path = get_least_played_video()
         gesture_index = video_list.index(video_path)
-        play_order.append(video_path)
+        # Record the timestamp when the video is played
+        play_order.append((video_path, int(time.time())))
 
         print(f"[PLAY] {os.path.basename(video_path)} (index: {gesture_index + 1})")
         play_video_then_countdown(video_path, gesture_index)
@@ -302,11 +303,15 @@ csv_path = os.path.join(script_dir, f"{filename}.csv")
 
 with open(csv_path, mode='w', newline='') as file:
     writer = csv.writer(file)
-    writer.writerow(["Order", "Video Label", "Filename", "Class Index"])
+    writer.writerow(["Timestamp", "Video Label", "Filename", "Class Index"])
 
-    for i, path in enumerate(play_order, start=1):
+    # Store the time each video was played
+    # We'll need to track timestamps during play_balanced_videos_for
+    for entry in play_order:
+        # entry will be a tuple (path, timestamp) after modification
+        path, timestamp = entry if isinstance(entry, tuple) else (entry, None)
         label = gesture_labels.get(os.path.basename(path), os.path.basename(path))
         class_index = video_list.index(path)  # Get index from original list
-        writer.writerow([i, label, os.path.basename(path), class_index + 1])
+        writer.writerow([timestamp if timestamp is not None else '', label, os.path.basename(path), class_index + 1])
 
 print(f"Play order saved to {csv_path}")

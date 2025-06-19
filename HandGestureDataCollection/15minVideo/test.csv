@@ -1,79 +1,57 @@
-Order,Video Label,Filename,Class Index
-1,OK Sign (Open),Okopen2.mp4,4
-2,Close Hand,Handclose2.mp4,1
-3,OK Sign (Close),Okclose2.mp4,3
-4,Prong Gesture (Close),Prongclose2.mp4,5
-5,Prong Gesture (Open),Prongopen2.mp4,6
-6,Open Hand,Handopen2.mp4,2
-7,OK Sign (Open),Okopen2.mp4,4
-8,Close Hand,Handclose2.mp4,1
-9,Prong Gesture (Close),Prongclose2.mp4,5
-10,Prong Gesture (Open),Prongopen2.mp4,6
-11,Open Hand,Handopen2.mp4,2
-12,OK Sign (Close),Okclose2.mp4,3
-13,Prong Gesture (Close),Prongclose2.mp4,5
-14,OK Sign (Open),Okopen2.mp4,4
-15,Open Hand,Handopen2.mp4,2
-16,OK Sign (Close),Okclose2.mp4,3
-17,Close Hand,Handclose2.mp4,1
-18,Prong Gesture (Open),Prongopen2.mp4,6
-19,Open Hand,Handopen2.mp4,2
-20,Prong Gesture (Open),Prongopen2.mp4,6
-21,OK Sign (Close),Okclose2.mp4,3
-22,Close Hand,Handclose2.mp4,1
-23,Prong Gesture (Close),Prongclose2.mp4,5
-24,OK Sign (Open),Okopen2.mp4,4
-25,Open Hand,Handopen2.mp4,2
-26,Prong Gesture (Open),Prongopen2.mp4,6
-27,Close Hand,Handclose2.mp4,1
-28,OK Sign (Close),Okclose2.mp4,3
-29,Prong Gesture (Close),Prongclose2.mp4,5
-30,OK Sign (Open),Okopen2.mp4,4
-31,Prong Gesture (Open),Prongopen2.mp4,6
-32,Open Hand,Handopen2.mp4,2
-33,OK Sign (Close),Okclose2.mp4,3
-34,Prong Gesture (Close),Prongclose2.mp4,5
-35,OK Sign (Open),Okopen2.mp4,4
-36,Close Hand,Handclose2.mp4,1
-37,OK Sign (Close),Okclose2.mp4,3
-38,Prong Gesture (Close),Prongclose2.mp4,5
-39,Prong Gesture (Open),Prongopen2.mp4,6
-40,OK Sign (Open),Okopen2.mp4,4
-41,Close Hand,Handclose2.mp4,1
-42,Open Hand,Handopen2.mp4,2
-43,Close Hand,Handclose2.mp4,1
-44,Prong Gesture (Open),Prongopen2.mp4,6
-45,Open Hand,Handopen2.mp4,2
-46,Prong Gesture (Close),Prongclose2.mp4,5
-47,OK Sign (Close),Okclose2.mp4,3
-48,OK Sign (Open),Okopen2.mp4,4
-49,Prong Gesture (Open),Prongopen2.mp4,6
-50,Close Hand,Handclose2.mp4,1
-51,OK Sign (Open),Okopen2.mp4,4
-52,OK Sign (Close),Okclose2.mp4,3
-53,Prong Gesture (Close),Prongclose2.mp4,5
-54,Open Hand,Handopen2.mp4,2
-55,OK Sign (Close),Okclose2.mp4,3
-56,Open Hand,Handopen2.mp4,2
-57,Close Hand,Handclose2.mp4,1
-58,Prong Gesture (Open),Prongopen2.mp4,6
-59,Prong Gesture (Close),Prongclose2.mp4,5
-60,OK Sign (Open),Okopen2.mp4,4
-61,Prong Gesture (Open),Prongopen2.mp4,6
-62,Prong Gesture (Close),Prongclose2.mp4,5
-63,Close Hand,Handclose2.mp4,1
-64,OK Sign (Close),Okclose2.mp4,3
-65,Open Hand,Handopen2.mp4,2
-66,OK Sign (Open),Okopen2.mp4,4
-67,Close Hand,Handclose2.mp4,1
-68,Open Hand,Handopen2.mp4,2
-69,Prong Gesture (Close),Prongclose2.mp4,5
-70,Prong Gesture (Open),Prongopen2.mp4,6
-71,OK Sign (Close),Okclose2.mp4,3
-72,OK Sign (Open),Okopen2.mp4,4
-73,Open Hand,Handopen2.mp4,2
-74,OK Sign (Close),Okclose2.mp4,3
-75,Prong Gesture (Close),Prongclose2.mp4,5
-76,Close Hand,Handclose2.mp4,1
-77,OK Sign (Open),Okopen2.mp4,4
-78,Prong Gesture (Open),Prongopen2.mp4,6
+Timestamp,Video Label,Filename,Class Index
+1750297884,Close Hand,Handclose2.mp4,1
+1750297899,Prong Gesture (Close),Prongclose2.mp4,3
+1750297913,OK Sign (Close),Okclose2.mp4,2
+1750297928,Prong Gesture (Close),Prongclose2.mp4,3
+1750297942,Close Hand,Handclose2.mp4,1
+1750297956,OK Sign (Close),Okclose2.mp4,2
+1750297971,Prong Gesture (Close),Prongclose2.mp4,3
+1750297985,Close Hand,Handclose2.mp4,1
+1750297999,OK Sign (Close),Okclose2.mp4,2
+1750298013,Prong Gesture (Close),Prongclose2.mp4,3
+1750298027,Close Hand,Handclose2.mp4,1
+1750298041,OK Sign (Close),Okclose2.mp4,2
+1750298056,Close Hand,Handclose2.mp4,1
+1750298101,OK Sign (Close),Okclose2.mp4,2
+1750298116,Prong Gesture (Close),Prongclose2.mp4,3
+1750298130,Prong Gesture (Close),Prongclose2.mp4,3
+1750298145,Close Hand,Handclose2.mp4,1
+1750298159,OK Sign (Close),Okclose2.mp4,2
+1750298174,Close Hand,Handclose2.mp4,1
+1750298188,Prong Gesture (Close),Prongclose2.mp4,3
+1750298202,OK Sign (Close),Okclose2.mp4,2
+1750298217,Prong Gesture (Close),Prongclose2.mp4,3
+1750298231,OK Sign (Close),Okclose2.mp4,2
+1750298246,Close Hand,Handclose2.mp4,1
+1750298259,Prong Gesture (Close),Prongclose2.mp4,3
+1750298273,OK Sign (Close),Okclose2.mp4,2
+1750298318,Close Hand,Handclose2.mp4,1
+1750298332,Prong Gesture (Close),Prongclose2.mp4,3
+1750298346,OK Sign (Close),Okclose2.mp4,2
+1750298361,Close Hand,Handclose2.mp4,1
+1750298375,OK Sign (Close),Okclose2.mp4,2
+1750298390,Prong Gesture (Close),Prongclose2.mp4,3
+1750298404,Close Hand,Handclose2.mp4,1
+1750298418,Prong Gesture (Close),Prongclose2.mp4,3
+1750298433,OK Sign (Close),Okclose2.mp4,2
+1750298448,Close Hand,Handclose2.mp4,1
+1750298462,Prong Gesture (Close),Prongclose2.mp4,3
+1750298476,OK Sign (Close),Okclose2.mp4,2
+1750298491,Close Hand,Handclose2.mp4,1
+1750298535,OK Sign (Close),Okclose2.mp4,2
+1750298550,Close Hand,Handclose2.mp4,1
+1750298563,Prong Gesture (Close),Prongclose2.mp4,3
+1750298578,Prong Gesture (Close),Prongclose2.mp4,3
+1750298592,Close Hand,Handclose2.mp4,1
+1750298605,OK Sign (Close),Okclose2.mp4,2
+1750298620,OK Sign (Close),Okclose2.mp4,2
+1750298635,Prong Gesture (Close),Prongclose2.mp4,3
+1750298649,Close Hand,Handclose2.mp4,1
+1750298662,Prong Gesture (Close),Prongclose2.mp4,3
+1750298677,OK Sign (Close),Okclose2.mp4,2
+1750298691,Close Hand,Handclose2.mp4,1
+1750298705,Prong Gesture (Close),Prongclose2.mp4,3
+1750298750,OK Sign (Close),Okclose2.mp4,2
+1750298764,Close Hand,Handclose2.mp4,1
+1750298778,Close Hand,Handclose2.mp4,1
+1750298792,OK Sign (Close),Okclose2.mp4,2
