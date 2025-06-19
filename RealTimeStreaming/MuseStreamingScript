@@ -1,0 +1,69 @@
+#this is not complete, testing on the MuseStreamingTest.py
+
+import subprocess
+import time
+from pylsl import StreamInlet, resolve_stream, resolve_streams
+
+def start_muse_stream():
+    print("[INFO] Starting Muse stream...")
+    # Start the stream in a background process
+    return subprocess.Popen(["muselsl", "stream"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+def muse_connected():
+    streams = resolve_streams()
+    for stream in streams:
+        if stream.type() == 'EEG' and 'Muse' in stream.name():
+            print(f"[CONNECTED] Found stream: {stream.name()}")
+            return True
+    print("[NOT CONNECTED] No Muse EEG stream found.")
+    return False
+
+def wait_for_stream(timeout=10):
+    print("[INFO] Waiting for EEG stream...")
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        if muse_connected():
+            return True
+        time.sleep(1)
+    raise TimeoutError("[ERROR] Timed out waiting for Muse EEG stream.")
+
+def connect_to_eeg_stream():
+    print("[INFO] Looking for an EEG stream...")
+    streams = resolve_stream('type', 'EEG')
+    if not streams:
+        raise RuntimeError("[ERROR] No EEG stream found. Is Muse powered on?")
+    print("[INFO] EEG stream found.")
+    return StreamInlet(streams[0])
+
+def process_sample(sample, timestamp):
+    # Custom processing (replace with your own logic)
+    print(f"Timestamp: {timestamp:.3f} | EEG: {sample}")
+
+def main():
+    print("[INFO] Press Ctrl+C to stop program.")
+
+    # Step 1: Start Muse stream
+    stream_proc = start_muse_stream()
+    time.sleep(5)  # Give it time to initialize
+    
+    try:
+        wait_for_stream(timeout=10)
+        # Step 2: Connect to EEG stream
+        inlet = connect_to_eeg_stream()
+
+        # Step 3: Continuously read samples
+        print("[INFO] Streaming EEG data...")
+        while True:
+            sample, timestamp = inlet.pull_sample()
+            # in this function, we gather 2 seconds of data and send it via shared variable
+            process_sample(sample, timestamp)
+
+    except KeyboardInterrupt:
+        print("\n[INFO] Stopping...")
+    finally:
+        stream_proc.terminate()
+        stream_proc.wait()
+        print("[INFO] Muse stream terminated.")
+
+if __name__ == "__main__":
+    main()

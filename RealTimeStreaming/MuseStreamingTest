@@ -1,0 +1,72 @@
+import subprocess
+import time
+import csv
+from pylsl import StreamInlet, resolve_stream
+
+# ==== PARAMETERS ====
+DURATION_SECONDS = 10         # ⏱ how long to record
+CSV_FILENAME = "muse_data.csv"
+NUM_CHANNELS = 4              # Muse 2 EEG channels
+# =====================
+
+def start_muse_stream():
+    print("[INFO] Starting muselsl stream...")
+    try:
+        process = subprocess.Popen(["muselsl", "stream"],
+                                   stdout=subprocess.DEVNULL,
+                                   stderr=subprocess.DEVNULL)
+        print("muselsl stream launched successfully.")
+        return process
+    except Exception as e:
+        print(f"Failed to start muselsl stream: {e}")
+        exit(1)
+
+def connect_to_eeg_stream(timeout=10):
+    print("[INFO] Searching for EEG stream...")
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        streams = resolve_stream('type', 'EEG')
+        if streams:
+            print("EEG stream connected.")
+            return StreamInlet(streams[0])
+        time.sleep(1)
+    print("Timeout: No EEG stream found. Is Muse turned on and streaming?")
+    exit(1)
+
+def main():
+    stream_proc = start_muse_stream()
+    time.sleep(5)
+
+    inlet = connect_to_eeg_stream()
+
+    data = []
+    start_time = time.time()
+
+    print(f"[INFO] Recording for {DURATION_SECONDS} seconds...")
+    print("[INFO] Streaming EEG data now:\n")
+
+    try:
+        while time.time() - start_time < DURATION_SECONDS:
+            sample, timestamp = inlet.pull_sample()
+            row = [timestamp] + sample[:NUM_CHANNELS]
+            data.append(row)
+            print(f"{timestamp:.3f} | EEG: {sample[:NUM_CHANNELS]}")
+    except KeyboardInterrupt:
+        print("\n[INFO] Interrupted by user. Stopping...")
+    finally:
+        print(f"\n[INFO] Recording complete. Saving to '{CSV_FILENAME}'...")
+        try:
+            with open(CSV_FILENAME, 'w', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow(['Timestamp', 'EEG1', 'EEG2', 'EEG3', 'EEG4'])
+                writer.writerows(data)
+            print(f"Data saved to {CSV_FILENAME}.")
+        except Exception as e:
+            print(f"Failed to write CSV: {e}")
+
+        stream_proc.terminate()
+        stream_proc.wait()
+        print("muselsl stream terminated. Program complete.")
+
+if __name__ == "__main__":
+    main()
