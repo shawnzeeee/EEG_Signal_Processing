@@ -53,10 +53,10 @@ total_duration = 15 * 60  # total session time
 
 # --- HELPER FUNCTIONS ---
 def send_gesture_classification(gesture_code):
-    """Writes an integer gesture classification (0 to 5) into shared memory."""
-    print(f"sending gesture classification", gesture_code + 1)
+    """Writes an integer gesture classification (0 to 15) into shared memory."""
+    print(f"sending gesture classification", gesture_code)
     shm.seek(0)
-    shm.write(struct.pack('i', gesture_code + 1))
+    shm.write(struct.pack('i', gesture_code))
 
 def get_least_played_video():
     min_play = min(play_counts.values())
@@ -175,7 +175,7 @@ def play_video_then_countdown(path, gesture_index):
         cv2.imshow("Display", overlay)
 
         if i == "GO":
-            send_gesture_classification(gesture_index)
+            send_gesture_classification(gesture_index + 1)
 
         if cv2.waitKey(1000) & 0xFF == ord('q'):
             exit(0)

@@ -2,7 +2,8 @@
 
 import subprocess
 import time
-from pylsl import StreamInlet, resolve_stream, resolve_streams
+from pylsl import StreamInlet, resolve_streams
+
 
 def start_muse_stream():
     print("[INFO] Starting Muse stream...")
@@ -29,7 +30,7 @@ def wait_for_stream(timeout=10):
 
 def connect_to_eeg_stream():
     print("[INFO] Looking for an EEG stream...")
-    streams = resolve_stream('type', 'EEG')
+    streams = resolve_streams()
     if not streams:
         raise RuntimeError("[ERROR] No EEG stream found. Is Muse powered on?")
     print("[INFO] EEG stream found.")
