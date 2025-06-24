@@ -107,6 +107,8 @@ def main():
                 if len(eeg_buffer) == buffer_size:
                     if np.all(np.isfinite(eeg_buffer)):
                         ordered_buffer = np.roll(eeg_buffer, -buffer_ptr)
+                        bin_file.seek(0)  # Move to the start of the file
+
                         bin_file.write(ordered_buffer.tobytes())
                         bin_file.flush()
                     else:

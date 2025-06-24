@@ -3,8 +3,14 @@ import time
 import os
 from scipy.signal import welch
 import pandas as pd
+
+from mne.decoding import CSP
 from sklearn.svm import SVC
+from sklearn.pipeline import Pipeline
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 import joblib
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 # Function to calculate mobility and complexity (Hjorth parameters)
 def calculate_hjorth_parameters(signal):
@@ -26,7 +32,7 @@ def calculate_bandpowers(signal, fs=250):
 
 all_output_data = []
 
-def process_idle_windows(idle_indices, df, window_size=500, num_windows=5):
+def process_idle_windows(idle_indices, df, window_size=500, num_windows=4):
     processed_data = []
     channel_names = ["Channel 1", "Channel 2", "Channel 3", "Channel 4"]
     for start_idx in idle_indices:
@@ -80,61 +86,49 @@ all_output_data.extend(process_attention_windows(attention_indices, df))
 all_output_data.extend(process_idle_windows(idle_indices, df))
 
 all_output_data = np.array(all_output_data)
-
-
-# Features: all columns except last
 X = all_output_data[:, :-1]
-# Labels: last column
 y = all_output_data[:, -1]
 
+# Reshape for CSP: (n_trials, n_channels, n_times)
+n_trials = X.shape[0]
+n_channels = 4
+n_features_per_channel = 4  # mobility, complexity, alpha, beta
+n_times = int(X.shape[1] / n_channels)
+X_csp = X.reshape(n_trials, n_channels, n_times)
+
+# 1. CSP + SVM
+csp = CSP(n_components=4, reg=None, log=True, norm_trace=False)
 svm = SVC(kernel='linear')
+pipeline_csp_svm = Pipeline([
+    ('csp', csp),
+    ('svm', svm)
+])
+pipeline_csp_svm.fit(X_csp, y)
+y_pred_csp_svm = pipeline_csp_svm.predict(X_csp)
+cm_csp_svm = confusion_matrix(y, y_pred_csp_svm)
+ConfusionMatrixDisplay(confusion_matrix=cm_csp_svm, display_labels=[1, 2]).plot(cmap=plt.cm.Blues)
+plt.title('CSP + SVM Confusion Matrix')
+plt.show()
 
-# Train SVM directly on features
-svm.fit(X, y)
+# 2. CSP + LDA
+lda = LinearDiscriminantAnalysis()
+pipeline_csp_lda = Pipeline([
+    ('csp', csp),
+    ('lda', lda)
+])
+pipeline_csp_lda.fit(X_csp, y)
+y_pred_csp_lda = pipeline_csp_lda.predict(X_csp)
+cm_csp_lda = confusion_matrix(y, y_pred_csp_lda)
+ConfusionMatrixDisplay(confusion_matrix=cm_csp_lda, display_labels=[1, 2]).plot(cmap=plt.cm.Greens)
+plt.title('CSP + LDA Confusion Matrix')
+plt.show()
 
-print("SVM training complete.")
+# 3. SVM on features only
+svm2 = SVC(kernel='linear')
+svm2.fit(X, y)
+y_pred_svm = svm2.predict(X)
+cm_svm = confusion_matrix(y, y_pred_svm)
+ConfusionMatrixDisplay(confusion_matrix=cm_svm, display_labels=[1, 2]).plot(cmap=plt.cm.Oranges)
+plt.title('SVM (No CSP) Confusion Matrix')
+plt.show()
 
-# Export the trained SVM model
-model_path = os.path.join(os.path.dirname(__file__), 'svm_model.joblib')
-joblib.dump(svm, model_path)
-print(f"SVM model exported to {model_path}")
-
-file_path = os.path.join(os.path.dirname(__file__), 'data.bin')
-
-print('[INFO] Reading EEG data from data.bin...')
-
-window_size = 2000  # 2 seconds, 4 channels, 250Hz
-
-try:
-    attention_threshold = 0
-    while True:
-        data_array = np.fromfile(file_path, dtype=np.float32)
-        if len(data_array) < window_size:
-            time.sleep(0.1)
-            continue
-        if len(data_array) == window_size:
-            eeg_window = data_array.reshape(500, 4)
-            features = []
-            for ch in range(4):
-                signal = eeg_window[:, ch]
-                #print(signal)
-                mobility, complexity = calculate_hjorth_parameters(signal)
-                alpha_power, beta_power = calculate_bandpowers(signal)
-                features.extend([mobility, complexity, alpha_power, beta_power])
-            features = np.array(features).reshape(1, -1)
-            # Predict class
-            predicted_class = svm.predict(features)[0]
-            adder = -10
-            if predicted_class == 2:
-                adder = 1
-
-            attention_threshold += adder
-            attention_threshold = max(0, min(attention_threshold, 300))
-
-            gesture = "Open"
-            if attention_threshold >= 200:
-                gesture = "Close"
-            print(f"Predicted class: {gesture}")
-        #time.sleep(0.1)
-except KeyboardInterrupt:
-    print("Exiting...")

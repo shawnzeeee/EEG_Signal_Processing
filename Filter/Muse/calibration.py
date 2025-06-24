@@ -47,8 +47,8 @@ gesture_labels = {
 }
 
 cycle_duration = 8   
-break_duration = 10    
-total_duration = 20
+break_duration = 12    
+total_duration = 60 * 3
 
 
 
